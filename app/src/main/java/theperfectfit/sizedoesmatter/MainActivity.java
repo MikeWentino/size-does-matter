@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,18 +69,37 @@ public class MainActivity extends ActionBarActivity {
                     ImageView imgView = (ImageView)findViewById(R.id.imageView);
                     InputStream is = getContentResolver().openInputStream(data.getData());
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    Log.w("imgDebug", "imgView.getWidth(): "+imgView.getMeasuredWidth());
-                    Log.w("imgDebug", "bitmap.getWidth(): "+bitmap.getWidth());
-                    Log.w("imgDebug", "bitmap.getHeight(): " +bitmap.getHeight());
+                    is.close();
+                    RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
+
+                    //Debug output
+                    Log.w("IMG_DEBUG", "theLayout.getWidth(): "+theLayout.getWidth());
+                    Log.w("IMG_DEBUG", "theLayout.getHeight(): " + theLayout.getHeight());
+                    Log.w("IMG_DEBUG", "imgView.getPaddingBottom(): "+imgView.getPaddingBottom());
+                    Log.w("IMG_DEBUG", "imgView.getPaddingTop(): "+imgView.getPaddingTop());
+                    Log.w("IMG_DEBUG", "imgView.getPaddingLeft(): "+imgView.getPaddingLeft());
+                    Log.w("IMG_DEBUG", "imgView.getPaddingRight(): "+imgView.getPaddingRight());
+                    Log.w("IMG_DEBUG", "imgView.getMeasuredHeight(): "+imgView.getMeasuredHeight());
+                    Log.w("IMG_DEBUG", "imgView.getWidth(): "+imgView.getParent());
+                    Log.w("IMG_DEBUG", "imgView.getWidth(): "+imgView.getWidth());
+                    Log.w("IMG_DEBUG", "imgView.getHeight(): "+imgView.getHeight());
+                    Log.w("IMG_DEBUG", "imgView.getMaxWidth(): "+imgView.getMaxWidth());
+                    Log.w("IMG_DEBUG", "imgView.getMaxHeight(): "+imgView.getMaxHeight());
+                    Log.w("IMG_DEBUG", "bitmap.getWidth(): "+bitmap.getWidth());
+                    Log.w("IMG_DEBUG", "bitmap.getHeight(): " +bitmap.getHeight());
+
+                    //loads original image (still need to put an original image into resources)
+                    bitmap = Bitmap.createScaledBitmap(bitmap,2000,1000,false );
+                    imgView.setImageBitmap(bitmap);
+
+                    //loads attempted scaled image (not resizable yet)
                     int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgView.getMeasuredWidth()*1.0));
                     bitmap = Bitmap.createScaledBitmap(bitmap,imgView.getMeasuredWidth(),scaledHeight,false );
-                    is.close();
-
-
                     imgView.setImageBitmap(bitmap);
-                    //imgView.setBackground(Drawable.createFromStream(stream,data.getData().toString()));
 
-                }catch (FileNotFoundException e){} catch (IOException e) {
+                }catch (FileNotFoundException e){
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
