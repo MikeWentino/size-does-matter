@@ -2,12 +2,15 @@ package theperfectfit.sizedoesmatter;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 
@@ -61,13 +65,23 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
 
                 try{
-                    InputStream stream = getContentResolver().openInputStream(data.getData());
-
                     ImageView imgView = (ImageView)findViewById(R.id.imageView);
+                    InputStream is = getContentResolver().openInputStream(data.getData());
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    Log.w("imgDebug", "imgView.getWidth(): "+imgView.getMeasuredWidth());
+                    Log.w("imgDebug", "bitmap.getWidth(): "+bitmap.getWidth());
+                    Log.w("imgDebug", "bitmap.getHeight(): " +bitmap.getHeight());
+                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgView.getMeasuredWidth()*1.0));
+                    bitmap = Bitmap.createScaledBitmap(bitmap,imgView.getMeasuredWidth(),scaledHeight,false );
+                    is.close();
 
-                    imgView.setBackground(Drawable.createFromStream(stream,data.getData().toString()));
 
-                }catch (FileNotFoundException e){}
+                    imgView.setImageBitmap(bitmap);
+                    //imgView.setBackground(Drawable.createFromStream(stream,data.getData().toString()));
+
+                }catch (FileNotFoundException e){} catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
             } else if (resultCode == RESULT_CANCELED) {
