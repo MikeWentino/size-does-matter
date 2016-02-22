@@ -7,7 +7,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@mipmap/ic_joke"/>
+            android:src="@mipmap/rulr_logo"/>
     </item>
 
 </layer-list>
