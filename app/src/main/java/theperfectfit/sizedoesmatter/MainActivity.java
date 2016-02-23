@@ -34,6 +34,10 @@ public class MainActivity extends ActionBarActivity {
     private double scaleLength;
     private double objectLength;
 
+    private int imgViewWidth;
+    private int imgViewHeight;
+
+
     private enum drawState {
         Scale,Object
     }
@@ -46,10 +50,68 @@ public class MainActivity extends ActionBarActivity {
 
         switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
 
+        imgViewWidth = -1;
+        imgViewHeight = -1;
+
+        Log.w("IMG_DEBUG", "ONCREATE imgViewWidth: "+imgViewWidth);
+        Log.w("IMG_DEBUG", "ONCREATE imgViewHeight: " +imgViewHeight);
+
         //findViewById(R.id.imageView).setOnTouchListener((View v, MotionEvent e) -> imageTouchEvent(v,e));
         //findViewById(R.id.imageView).setOnTouchListener(this::imageTouchEvent);
 
     }
+
+    @Override
+    protected void onStart() {
+        int imgViewWidthTemp = imgViewWidth;
+        int imgViewHeightTemp = imgViewHeight;
+        super.onStart();
+        imgViewWidth = imgViewWidthTemp;
+        imgViewHeight = imgViewHeightTemp;
+    }
+    @Override
+    protected void onPause() {
+        int imgViewWidthTemp = imgViewWidth;
+        int imgViewHeightTemp = imgViewHeight;
+        super.onPause();
+        imgViewWidth = imgViewWidthTemp;
+        imgViewHeight = imgViewHeightTemp;
+    }
+
+    @Override
+    protected void onStop() {
+        int imgViewWidthTemp = imgViewWidth;
+        int imgViewHeightTemp = imgViewHeight;
+        super.onStop();
+        imgViewWidth = imgViewWidthTemp;
+        imgViewHeight = imgViewHeightTemp;
+    }
+
+    @Override
+    protected void onRestart() {
+        int imgViewWidthTemp = imgViewWidth;
+        int imgViewHeightTemp = imgViewHeight;
+        super.onRestart();
+        imgViewWidth = imgViewWidthTemp;
+        imgViewHeight = imgViewHeightTemp;
+    }
+
+    /*
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        // TODO Auto-generated method stub
+        super.onWindowFocusChanged(hasFocus);
+
+        ImageView imgView = (ImageView) findViewById(R.id.imageView);
+        if(imgViewWidth==0)
+            imgViewWidth = imgView.getWidth();
+        if(imgViewHeight==0)
+            imgViewHeight = imgView.getHeight();
+        Log.w("IMG_DEBUG", "METHOD width : " + imgView.getWidth());
+        Log.w("IMG_DEBUG", "METHOD height : " + imgView.getHeight());
+
+    }
+    */
 
     // Opens camera app to get image
     public void createCameraIntent(View v){
@@ -80,7 +142,7 @@ public class MainActivity extends ActionBarActivity {
                     Log.w("IMG_DEBUG", "imgView.getPaddingLeft(): "+imgView.getPaddingLeft());
                     Log.w("IMG_DEBUG", "imgView.getPaddingRight(): "+imgView.getPaddingRight());
                     Log.w("IMG_DEBUG", "imgView.getMeasuredHeight(): "+imgView.getMeasuredHeight());
-                    Log.w("IMG_DEBUG", "imgView.getWidth(): "+imgView.getParent());
+                    //Log.w("IMG_DEBUG", "imgView.getWidth(): "+imgView.getParent());
                     Log.w("IMG_DEBUG", "imgView.getWidth(): "+imgView.getWidth());
                     Log.w("IMG_DEBUG", "imgView.getHeight(): "+imgView.getHeight());
                     Log.w("IMG_DEBUG", "imgView.getMaxWidth(): "+imgView.getMaxWidth());
@@ -89,13 +151,26 @@ public class MainActivity extends ActionBarActivity {
                     Log.w("IMG_DEBUG", "bitmap.getHeight(): " +bitmap.getHeight());
 
                     //loads original image (still need to put an original image into resources)
-                    bitmap = Bitmap.createScaledBitmap(bitmap,2000,1000,false );
-                    imgView.setImageBitmap(bitmap);
+
+                    if(imgViewWidth==-1 && imgViewHeight==-1) {
+                        bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
+                        imgView.setImageBitmap(bitmap);
+                        imgViewWidth = imgView.getWidth();
+                        imgViewHeight = imgView.getHeight();
+                        Log.w("IMG_DEBUG", "CHANGING IMGVIEW DATA: ");
+                    }
+
+
+                    Log.w("IMG_DEBUG", "imgViewWidth: "+imgViewWidth);
+                    Log.w("IMG_DEBUG", "imgViewHeight: " +imgViewHeight);
 
                     //loads attempted scaled image (not resizable yet)
-                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgView.getMeasuredWidth()*1.0));
-                    bitmap = Bitmap.createScaledBitmap(bitmap,imgView.getMeasuredWidth(),scaledHeight,false );
-                    imgView.setImageBitmap(bitmap);
+                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgViewWidth*1.0));
+
+                    Log.w("IMG_DEBUG", "scaledHeight: "+scaledHeight);
+
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgViewWidth,scaledHeight,false );
+                    imgView.setImageBitmap(bitmap2);
 
                 }catch (FileNotFoundException e){
                     e.printStackTrace();
