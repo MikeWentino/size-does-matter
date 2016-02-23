@@ -14,6 +14,6 @@ public class App extends Application{
     public void onCreate(){
         super.onCreate();
 
-        SystemClock.sleep(TimeUnit.MILLISECONDS.toMillis(900));
+        SystemClock.sleep(TimeUnit.MILLISECONDS.toMillis(1200));
     }
 }
