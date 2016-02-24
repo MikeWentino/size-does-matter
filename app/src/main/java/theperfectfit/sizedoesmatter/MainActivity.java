@@ -6,7 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -21,9 +23,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -134,24 +139,6 @@ public class MainActivity extends ActionBarActivity {
                     is.close();
                     RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
 
-                    //Debug output
-                    Log.w("IMG_DEBUG", "theLayout.getWidth(): "+theLayout.getWidth());
-                    Log.w("IMG_DEBUG", "theLayout.getHeight(): " + theLayout.getHeight());
-                    Log.w("IMG_DEBUG", "imgView.getPaddingBottom(): "+imgView.getPaddingBottom());
-                    Log.w("IMG_DEBUG", "imgView.getPaddingTop(): "+imgView.getPaddingTop());
-                    Log.w("IMG_DEBUG", "imgView.getPaddingLeft(): "+imgView.getPaddingLeft());
-                    Log.w("IMG_DEBUG", "imgView.getPaddingRight(): "+imgView.getPaddingRight());
-                    Log.w("IMG_DEBUG", "imgView.getMeasuredHeight(): "+imgView.getMeasuredHeight());
-                    //Log.w("IMG_DEBUG", "imgView.getWidth(): "+imgView.getParent());
-                    Log.w("IMG_DEBUG", "imgView.getWidth(): "+imgView.getWidth());
-                    Log.w("IMG_DEBUG", "imgView.getHeight(): "+imgView.getHeight());
-                    Log.w("IMG_DEBUG", "imgView.getMaxWidth(): "+imgView.getMaxWidth());
-                    Log.w("IMG_DEBUG", "imgView.getMaxHeight(): "+imgView.getMaxHeight());
-                    Log.w("IMG_DEBUG", "bitmap.getWidth(): "+bitmap.getWidth());
-                    Log.w("IMG_DEBUG", "bitmap.getHeight(): " +bitmap.getHeight());
-
-                    //loads original image (still need to put an original image into resources)
-
                     if(imgViewWidth==-1 && imgViewHeight==-1) {
                         bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
                         imgView.setImageBitmap(bitmap);
@@ -162,15 +149,17 @@ public class MainActivity extends ActionBarActivity {
 
 
                     Log.w("IMG_DEBUG", "imgViewWidth: "+imgViewWidth);
-                    Log.w("IMG_DEBUG", "imgViewHeight: " +imgViewHeight);
+                    Log.w("IMG_DEBUG", "imgViewHeight: " + imgViewHeight);
 
                     //loads attempted scaled image (not resizable yet)
                     int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgViewWidth*1.0));
 
-                    Log.w("IMG_DEBUG", "scaledHeight: "+scaledHeight);
+                    Log.w("IMG_DEBUG", "scaledHeight: " + scaledHeight);
 
                     Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgViewWidth,scaledHeight,false );
                     imgView.setImageBitmap(bitmap2);
+
+                    getContentResolver().delete(data.getData(), null, null);
 
                 }catch (FileNotFoundException e){
                     e.printStackTrace();
@@ -206,6 +195,44 @@ public class MainActivity extends ActionBarActivity {
         label.setText(String.format("x:%f y:%f",x,y));
 
         return true;
+    }
+
+    private static Uri getOutputMediaFileUri(int type){
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /** Create a File for saving an image or video */
+    private static File getOutputMediaFile(int type){
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == 1){
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_"+ timeStamp + ".jpg");
+        } else if(type == 2) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "VID_"+ timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
     }
 
 
