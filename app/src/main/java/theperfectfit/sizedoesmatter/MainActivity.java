@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
+        switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
 
         imgView = (ImageView) findViewById(R.id.MainImageView);
 
@@ -96,15 +95,6 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(this,"Capture error", Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    // Changes drawing state
-    public void switchStateChange(View v){
-        switchState = ((Switch)v).isChecked() ? drawState.Object : drawState.Scale;
-        TextView label = (TextView)findViewById(R.id.textView2);
-
-        if(switchState == drawState.Object) label.setText("Object");
-        else label.setText("Scale");
     }
 
     // Touch event listener
@@ -155,6 +145,19 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return mediaFile;
+    }
+
+    public void switchSelectionMode(View view){
+        touchOverlay overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
+        overlay.switchSelection(view);
+
+        TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+
+        if(overlay.isScale) scaleSwitchText.setText("Scale");
+        else scaleSwitchText.setText("Object");
+
+        scaleSwitchText.invalidate();
+
     }
 
 

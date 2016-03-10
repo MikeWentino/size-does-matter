@@ -3,7 +3,6 @@ package theperfectfit.sizedoesmatter;
 import android.content.Context;
 import android.graphics.*;
 import android.graphics.Paint.Style;
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.*;
@@ -13,9 +12,13 @@ import java.util.List;
 
 public class touchOverlay extends View {
     private final Paint pointPaint;
-    private final Paint linePaint;
+    private final Paint scaleLinePaint;
+    private final Paint objectLinePaint;
 
     private List<FloatPoint> points;
+    private List<FloatPoint> scalePoints;
+    private List<FloatPoint> objectPoints;
+    public boolean isScale;
     private boolean calcDim = false;
     private float width;
     private float height;
@@ -33,11 +36,20 @@ public class touchOverlay extends View {
         pointPaint.setStyle(Style.FILL);
         pointPaint.setColor(Color.RED);
 
-        linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setStyle(Style.STROKE);
-        linePaint.setColor(Color.GREEN);
+        scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        scaleLinePaint.setStyle(Style.STROKE);
+        scaleLinePaint.setColor(Color.GREEN);
+
+        objectLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        objectLinePaint.setStyle(Style.STROKE);
+        objectLinePaint.setColor(Color.BLUE);
 
         points = new ArrayList<>();
+        scalePoints = new ArrayList<>();
+        objectPoints = new ArrayList<>();
+        isScale = true;
+
+        points = scalePoints;
 
         currentPoint = null;
         touchDistance = null;
@@ -53,18 +65,34 @@ public class touchOverlay extends View {
             width = canvas.getWidth();
             height = canvas.getHeight();
 
-            points.add(new FloatPoint(width/4,height/4));
-            points.add(new FloatPoint(width/4*3,height/4));
-            points.add(new FloatPoint(width/4*3,height/4*3));
-            points.add(new FloatPoint(width/4,height/4*3));
+            scalePoints.add(new FloatPoint(width/8,height/8));
+            scalePoints.add(new FloatPoint(width/8*3,height/8));
+            scalePoints.add(new FloatPoint(width/8*3,height/8*3));
+            scalePoints.add(new FloatPoint(width/8,height/8*3));
+
+            objectPoints.add(new FloatPoint(width/8*5,height/8*5));
+            objectPoints.add(new FloatPoint(width/8*7,height/8*5));
+            objectPoints.add(new FloatPoint(width/8*7,height/8*7));
+            objectPoints.add(new FloatPoint(width/8*5,height/8*7));
         }
 
-        float prev_x = points.get(3).x;
-        float prev_y = points.get(3).y;
-        for(FloatPoint fp : points){
-            canvas.drawCircle(fp.x,fp.y,10,pointPaint);
+        float prev_x = scalePoints.get(3).x;
+        float prev_y = scalePoints.get(3).y;
+        for(FloatPoint fp : scalePoints){
+            if(isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
 
-            canvas.drawLine(prev_x,prev_y,fp.x,fp.y,linePaint);
+            canvas.drawLine(prev_x,prev_y,fp.x,fp.y, scaleLinePaint);
+
+            prev_x = fp.x;
+            prev_y = fp.y;
+        }
+
+        prev_x = objectPoints.get(3).x;
+        prev_y = objectPoints.get(3).y;
+        for(FloatPoint fp : objectPoints){
+            if(!isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
+
+            canvas.drawLine(prev_x,prev_y,fp.x,fp.y, objectLinePaint);
 
             prev_x = fp.x;
             prev_y = fp.y;
@@ -105,18 +133,30 @@ public class touchOverlay extends View {
                 currentPoint.x = touch_x - touchDistance.x;
                 currentPoint.y = touch_y - touchDistance.y;
 
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-
-                currentPoint.x = touch_x - touchDistance.x;
-                currentPoint.y = touch_y - touchDistance.y;
+                if(currentPoint.x < 0) currentPoint.x = 0;
+                if(currentPoint.x > width) currentPoint.x = width;
+                if(currentPoint.y < 0) currentPoint.y = 0;
+                if(currentPoint.y > height) currentPoint.y = height;
 
                 invalidate();
                 break;
         }
         return true;
     }
+
+    public void switchSelection(View v){
+
+        isScale = !isScale;
+
+        if(isScale){
+            points = scalePoints;
+        }
+        else points = objectPoints;
+
+        invalidate();
+
+    }
+
 }
 
 class FloatPoint {
