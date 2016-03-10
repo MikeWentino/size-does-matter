@@ -74,20 +74,16 @@ public class MainActivity extends ActionBarActivity {
                     InputStream is = getContentResolver().openInputStream(data.getData());
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
                     is.close();
-                    RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
 
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
+                    System.out.println(imgView.getFixedWidth() + " " + imgView.getFixedWidth());
+
+                    float imageRatio = ((float) bitmap.getHeight())/bitmap.getWidth();
+                    bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth()*imageRatio), false);
                     imgView.setImageBitmap(bitmap);
-
-                    //loads attempted scaled image (not resizable yet)
-                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgView.getFixedHeight()*1.0));
-
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgView.getFixedWidth(),scaledHeight,false );
-                    imgView.setImageBitmap(bitmap2);
 
                     getContentResolver().delete(data.getData(), null, null);
 
-                }catch (FileNotFoundException e){
+                } catch (FileNotFoundException e){
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();

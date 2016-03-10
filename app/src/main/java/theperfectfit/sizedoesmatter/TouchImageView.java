@@ -26,8 +26,11 @@ public class TouchImageView extends ImageView{
         super.onWindowFocusChanged(focus);
 
         if(!found){
+            found = true;
             width = getWidth();
             height = getHeight();
+
+            System.out.println("Measure found: " + width + " " + height);
         }
     }
 
