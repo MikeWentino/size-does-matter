@@ -70,7 +70,7 @@ public class MainActivity extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
 
                 try{
-                    ImageView imgView = (ImageView)findViewById(R.id.MainImageView);
+                    TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
                     InputStream is = getContentResolver().openInputStream(data.getData());
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
                     is.close();
@@ -80,9 +80,9 @@ public class MainActivity extends ActionBarActivity {
                     imgView.setImageBitmap(bitmap);
 
                     //loads attempted scaled image (not resizable yet)
-                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgViewWidth*1.0));
+                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgView.getFixedHeight()*1.0));
 
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgViewWidth,scaledHeight,false );
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgView.getFixedWidth(),scaledHeight,false );
                     imgView.setImageBitmap(bitmap2);
 
                     getContentResolver().delete(data.getData(), null, null);

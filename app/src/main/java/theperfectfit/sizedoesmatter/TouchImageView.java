@@ -18,7 +18,7 @@ public class TouchImageView extends ImageView{
     public TouchImageView(Context context, AttributeSet attrs){
         super(context, attrs);
 
-        System.out.println("K bro");
+
     }
 
     @Override
@@ -31,6 +31,13 @@ public class TouchImageView extends ImageView{
         }
     }
 
+    public int getFixedWidth(){
+        return width;
+    }
+
+    public int getFixedHeight(){
+        return height;
+    }
 
 
 
