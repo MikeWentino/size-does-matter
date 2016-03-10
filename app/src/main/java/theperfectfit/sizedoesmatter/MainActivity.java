@@ -80,7 +80,13 @@ public class MainActivity extends ActionBarActivity {
                     imgView.setImageBitmap(bitmap);
 
                     //loads attempted scaled image (not resizable yet)
-                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgView.getFixedHeight()*1.0));
+                    int scaledHeight = (int) (((imgView.getFixedWidth()*1.0)/(bitmap.getWidth()*1.0))*bitmap.getHeight()*1.0);
+
+                    Log.d("USER VAR OUTPUT:::: ", "bitmap.getWidth() = " + bitmap.getWidth());
+                    Log.d("USER VAR OUTPUT:::: ", "bitmap.getHeight() = " + bitmap.getHeight());
+                    Log.d("USER VAR OUTPUT:::: ", "imgView.getFixedWidth() = " + imgView.getFixedWidth());
+                    Log.d("USER VAR OUTPUT:::: ", "imgView.getFixedHeight() = " + imgView.getFixedHeight());
+                    Log.d("USER VAR OUTPUT:::: ", "scaledHeight" + scaledHeight);
 
                     Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgView.getFixedWidth(),scaledHeight,false );
                     imgView.setImageBitmap(bitmap2);
