@@ -37,6 +37,8 @@ public class MainActivity extends ActionBarActivity {
     private int imgViewWidth;
     private int imgViewHeight;
 
+    private boolean found = false;
+
 
     private enum drawState {
         Scale,Object
@@ -64,6 +66,20 @@ public class MainActivity extends ActionBarActivity {
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean focus){
+        super.onWindowFocusChanged(focus);
+
+        View v = findViewById(R.id.MainImageView);
+
+        if(!found){
+            imgViewWidth = v.getWidth();
+            imgViewHeight = v.getHeight();
+
+            found = true;
+        }
+    }
+
     // Activity event listener
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -74,21 +90,23 @@ public class MainActivity extends ActionBarActivity {
                     InputStream is = getContentResolver().openInputStream(data.getData());
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
                     is.close();
-                    RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
-
-                    bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
-                    imgView.setImageBitmap(bitmap);
 
                     //loads attempted scaled image (not resizable yet)
-                    int scaledHeight = (int) (((imgView.getFixedWidth()*1.0)/(bitmap.getWidth()*1.0))*bitmap.getHeight()*1.0);
+                    int scaledHeight = (int) (((imgViewHeight*1.0)/(bitmap.getWidth()*1.0))*bitmap.getHeight()*1.0);
 
                     Log.d("USER VAR OUTPUT:::: ", "bitmap.getWidth() = " + bitmap.getWidth());
                     Log.d("USER VAR OUTPUT:::: ", "bitmap.getHeight() = " + bitmap.getHeight());
-                    Log.d("USER VAR OUTPUT:::: ", "imgView.getFixedWidth() = " + imgView.getFixedWidth());
-                    Log.d("USER VAR OUTPUT:::: ", "imgView.getFixedHeight() = " + imgView.getFixedHeight());
-                    Log.d("USER VAR OUTPUT:::: ", "scaledHeight" + scaledHeight);
+                    Log.d("USER VAR OUTPUT:::: ", "imgViewWidth = " + imgViewWidth);
+                    Log.d("USER VAR OUTPUT:::: ", "imgViewHeight = " + imgViewHeight);
+                    Log.d("USER VAR OUTPUT:::: ", "scaledHeight = " + scaledHeight);
 
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgView.getFixedWidth(),scaledHeight,false );
+                    /*
+                    TODO::
+                        --check if width needs to be scaled as well
+                        --check if img is in portrait view
+                    */
+
+                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgViewHeight,scaledHeight,false );
                     imgView.setImageBitmap(bitmap2);
 
                     getContentResolver().delete(data.getData(), null, null);
