@@ -39,10 +39,12 @@ public class touchOverlay extends View {
         scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         scaleLinePaint.setStyle(Style.STROKE);
         scaleLinePaint.setColor(Color.GREEN);
+        scaleLinePaint.setStrokeWidth(5);
 
         objectLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         objectLinePaint.setStyle(Style.STROKE);
         objectLinePaint.setColor(Color.BLUE);
+        objectLinePaint.setStrokeWidth(5);
 
         points = new ArrayList<>();
         scalePoints = new ArrayList<>();
@@ -79,8 +81,6 @@ public class touchOverlay extends View {
         float prev_x = scalePoints.get(3).x;
         float prev_y = scalePoints.get(3).y;
         for(FloatPoint fp : scalePoints){
-            if(isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
-
             canvas.drawLine(prev_x,prev_y,fp.x,fp.y, scaleLinePaint);
 
             prev_x = fp.x;
@@ -90,14 +90,20 @@ public class touchOverlay extends View {
         prev_x = objectPoints.get(3).x;
         prev_y = objectPoints.get(3).y;
         for(FloatPoint fp : objectPoints){
-            if(!isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
-
             canvas.drawLine(prev_x,prev_y,fp.x,fp.y, objectLinePaint);
 
             prev_x = fp.x;
             prev_y = fp.y;
         }
 
+        // draw circles ontop of lines
+        for(FloatPoint fp : scalePoints){
+            if(isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
+        }
+
+        for(FloatPoint fp : objectPoints){
+            if(!isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
+        }
 
 
     }
@@ -144,7 +150,7 @@ public class touchOverlay extends View {
         return true;
     }
 
-    public void switchSelection(View v){
+    public void switchSelection(){
 
         isScale = !isScale;
 

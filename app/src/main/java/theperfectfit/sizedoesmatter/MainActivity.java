@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -36,6 +37,9 @@ public class MainActivity extends ActionBarActivity {
     private int imgViewWidth;
     private int imgViewHeight;
 
+    private Switch scaleSwitch;
+    private TextView scaleSwitchText;
+
 
     private enum drawState {
         Scale,Object
@@ -51,7 +55,17 @@ public class MainActivity extends ActionBarActivity {
 
         imgView = (ImageView) findViewById(R.id.MainImageView);
 
-        Log.d("","-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
+        scaleSwitch = (Switch) findViewById(R.id.ScaleSwitch);
+        scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+
+        scaleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                switchSelectionMode();
+
+            }
+        });
     }
 
     // Opens camera app to get image
@@ -147,9 +161,9 @@ public class MainActivity extends ActionBarActivity {
         return mediaFile;
     }
 
-    public void switchSelectionMode(View view){
+    public void switchSelectionMode(){
         touchOverlay overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
-        overlay.switchSelection(view);
+        overlay.switchSelection();
 
         TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
 
