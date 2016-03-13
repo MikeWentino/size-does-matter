@@ -38,8 +38,7 @@
         android:layout_alignRight="@+id/textView"
         android:layout_alignEnd="@+id/textView"
         android:enabled="true"
-        android:checked="false"
-        android:onClick="switchSelectionMode" />
+        android:checked="false" />
 
     <TextView
         android:layout_width="wrap_content"
