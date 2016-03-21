@@ -16,6 +16,18 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
     private ImageView imgView;
     private int imgViewWidth;
     private int imgViewHeight;
-
+    private Toolbar mToolbar;
     private Switch scaleSwitch;
     private TextView scaleSwitchText;
 
@@ -50,6 +62,34 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        //mToolbar.inflateMenu(R.menu.menu_main);
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                switch (menuItem.getItemId()){
+                    case R.id.take_picture:
+                        //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                        // start the image capture Intent
+                        //startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        CameraFragment newFragment = new CameraFragment();
+                        fragmentTransaction.replace(R.id.fragment_container,newFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        return true;
+                }
+
+                return false;
+            }
+        });
+
+
 
         switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
 
@@ -67,7 +107,13 @@ public class MainActivity extends ActionBarActivity {
             }
         });
     }
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        return super.onCreateOptionsMenu(menu);
+    }
     // Opens camera app to get image
     public void createCameraIntent(View v){
         // create Intent to take a picture and return control to the calling application
@@ -174,6 +220,17 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    public void openHome(View view) {
+        System.out.println("Success");
+    }
+
+
+    public void onFragmentInteractionHome(Uri uri) {
+        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
+    }
+    public void onFragmentInteraction(Uri uri){
+
+    };
 
 
 }
