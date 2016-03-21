@@ -52,7 +52,7 @@ public class MainActivity extends ActionBarActivity {
 
         imgView = (ImageView) findViewById(R.id.MainImageView);
 
-        Log.d("","-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
+        Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
     }
 
     // Opens camera app to get image
@@ -69,13 +69,15 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 
-                try{
+                //try{
                     TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
-                    InputStream is = getContentResolver().openInputStream(data.getData());
-                    Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    is.close();
+                    Uri uri = data.getData();
+                    //InputStream is = getContentResolver().openInputStream(data.getData());
+                    Bundle bundle = data.getExtras();
+                    Bitmap bitmap = (Bitmap) bundle.get("data");
+                    //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    //is.close();
                     RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
-
                     bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
                     imgView.setImageBitmap(bitmap);
 
@@ -85,13 +87,16 @@ public class MainActivity extends ActionBarActivity {
                     Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgView.getFixedWidth(),scaledHeight,false );
                     imgView.setImageBitmap(bitmap2);
 
-                    getContentResolver().delete(data.getData(), null, null);
+                    //getContentResolver().delete(data.getData(), null, null);
 
-                }catch (FileNotFoundException e){
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+//                }catch (FileNotFoundException e){
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                catch(Exception e){
+//                    e.printStackTrace();
+//                }
 
 
             } else if (resultCode == RESULT_CANCELED) {
