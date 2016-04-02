@@ -54,19 +54,19 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-<<<<<<< HEAD
-        switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
 
-        imgView = (ImageView) findViewById(R.id.MainImageView);
+        //switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
 
-        Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
-=======
+       //imgView = (ImageView) findViewById(R.id.MainImageView);
+
+        //Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
+
         overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
         scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
         objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
         heightButton = (EditText) findViewById(R.id.HeightText);
         widthButton = (EditText) findViewById(R.id.WidthText);
->>>>>>> e13e613cb60019dc917897d8a286f07d16615411
+
     }
 
     // Opens camera app to get image
@@ -85,19 +85,19 @@ public class MainActivity extends ActionBarActivity {
 
                 //try{
                     TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
-<<<<<<< HEAD
+
                     Uri uri = data.getData();
                     //InputStream is = getContentResolver().openInputStream(data.getData());
                     Bundle bundle = data.getExtras();
                     Bitmap bitmap = (Bitmap) bundle.get("data");
                     //Bitmap bitmap = BitmapFactory.decodeStream(is);
                     //is.close();
-                    RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
+                    //RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
                     bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
-=======
-                    InputStream is = getContentResolver().openInputStream(data.getData());
-                    Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    if(is != null) is.close();
+
+                    //InputStream is = getContentResolver().openInputStream(data.getData());
+                    //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    //if(is != null) is.close();
 
                     Matrix matrix = new Matrix();
                     matrix.postRotate(90);
@@ -107,7 +107,7 @@ public class MainActivity extends ActionBarActivity {
 
                     float imageRatio = ((float) bitmap.getHeight())/bitmap.getWidth();
                     bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth()*imageRatio), false);
->>>>>>> e13e613cb60019dc917897d8a286f07d16615411
+
                     imgView.setImageBitmap(bitmap);
 
                     Log.d("USER VAR OUTPUT:::: ", "bitmap.getWidth() = " + bitmap.getWidth());
@@ -124,7 +124,7 @@ public class MainActivity extends ActionBarActivity {
 
                     //getContentResolver().delete(data.getData(), null, null);
 
-<<<<<<< HEAD
+
 //                }catch (FileNotFoundException e){
 //                    e.printStackTrace();
 //                } catch (IOException e) {
@@ -133,13 +133,7 @@ public class MainActivity extends ActionBarActivity {
 //                catch(Exception e){
 //                    e.printStackTrace();
 //                }
-=======
-                } catch (FileNotFoundException e){
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
->>>>>>> e13e613cb60019dc917897d8a286f07d16615411
+
 
 
             } else if (resultCode == RESULT_CANCELED) {
