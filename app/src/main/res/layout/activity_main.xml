@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:elevation="4dp"
+        android:visibility="visible"
+        android:clickable="true"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         android:layout_alignParentStart="true">
 
@@ -40,47 +41,48 @@
         android:visibility="visible" />-->
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Scale length: \nObject length:"
-        android:id="@+id/textView"
-        android:layout_below="@+id/ScaleSwitch"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:height="50dp" />
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Scale length: \nObject length:"-->
+        <!--android:id="@+id/textView"-->
+        <!--android:layout_below="@+id/ScaleSwitch"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:height="50dp" />-->
 
-    <Switch
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ScaleSwitch"
-        android:textOff="Scale"
-        android:textOn="Object"
-        android:showText="false"
-        android:splitTrack="false"
-        android:layout_below="@+id/toolbar"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView"
-        android:enabled="true"
-        android:checked="false" />
+    <!--<Switch-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/ScaleSwitch"-->
+        <!--android:textOff="Scale"-->
+        <!--android:textOn="Object"-->
+        <!--android:showText="false"-->
+        <!--android:splitTrack="false"-->
+        <!--android:layout_below="@+id/toolbar"-->
+        <!--android:layout_alignRight="@+id/textView"-->
+        <!--android:layout_alignEnd="@+id/textView"-->
+        <!--android:enabled="true"-->
+        <!--android:checked="false" />-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Scale"
-        android:id="@+id/ScaleSwitchText"
-        android:layout_below="@+id/toolbar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_above="@+id/textView"
-        android:layout_alignBottom="@+id/ScaleSwitch" />
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:text="Scale"-->
+        <!--android:id="@+id/ScaleSwitchText"-->
+        <!--android:layout_below="@+id/toolbar"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_above="@+id/textView"-->
+        <!--android:layout_alignBottom="@+id/ScaleSwitch" />-->
 
     <view
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         class="theperfectfit.sizedoesmatter.TouchImageView"
         android:id="@+id/MainImageView"
+        android:layout_below="@id/toolbar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
@@ -98,7 +100,7 @@
 
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/textView" />
+        android:layout_below="@id/toolbar" />
 
     <!-- <LinearLayout
         android:orientation="horizontal"

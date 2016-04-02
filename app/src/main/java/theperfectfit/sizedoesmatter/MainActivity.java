@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-       
+       overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
         setSupportActionBar(mToolbar);
         //mToolbar.inflateMenu(R.menu.menu_main);
 
@@ -93,9 +93,11 @@ public class MainActivity extends ActionBarActivity {
                     case R.id.take_picture:
                         //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         System.out.print(menuItem.getItemId());
+                        //mToolbar.isClickable() = false;
                         // start the image capture Intent
                         //startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                         FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.popBackStack();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         CameraFragment newFragment = new CameraFragment();
                         fragmentTransaction.replace(R.id.fragment_container, newFragment);
@@ -150,12 +152,9 @@ public class MainActivity extends ActionBarActivity {
                     case R.id.choose_scale:
                         switchSelectionMode();
                         return true;
-
-
-
-
-
-
+                    case R.id.calculate:
+                        overlay.calculateDimensions();
+                        return  true;
 
                 }
 
@@ -165,21 +164,21 @@ public class MainActivity extends ActionBarActivity {
 
 
 
-        switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
-
-       imgView = (ImageView) findViewById(R.id.MainImageView);
-
-        scaleSwitch = (Switch) findViewById(R.id.ScaleSwitch);
-        scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
-
-        scaleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                switchSelectionMode();
-
-            }
-        });
+//        switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
+//
+//       imgView = (ImageView) findViewById(R.id.MainImageView);
+//
+//        scaleSwitch = (Switch) findViewById(R.id.ScaleSwitch);
+//        scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+//
+//        scaleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+//                switchSelectionMode();
+//
+//            }
+//        });
 
         //Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
 //
@@ -325,47 +324,47 @@ public class MainActivity extends ActionBarActivity {
         return mediaFile;
     }
 
-    public void scalePressed(View view){
-        if(overlay.isEnabled && overlay.isScale){
-            overlay.switchState();
+//    public void scalePressed(View view){
+//        if(overlay.isEnabled && overlay.isScale){
+//            overlay.switchState();
+//
+//            scaleButton.setChecked(false);
+//            objectButton.setChecked(false);
+//            heightButton.setEnabled(false);
+//            widthButton.setEnabled(false);
+//        }
+//
+//        else {
+//            if (!overlay.isScale) overlay.switchSelection();
+//            if(!overlay.isEnabled) overlay.switchState();
+//
+//            scaleButton.setChecked(true);
+//            objectButton.setChecked(false);
+//            heightButton.setEnabled(true);
+//            widthButton.setEnabled(true);
+//        }
+//    }
 
-            scaleButton.setChecked(false);
-            objectButton.setChecked(false);
-            heightButton.setEnabled(false);
-            widthButton.setEnabled(false);
-        }
-
-        else {
-            if (!overlay.isScale) overlay.switchSelection();
-            if(!overlay.isEnabled) overlay.switchState();
-
-            scaleButton.setChecked(true);
-            objectButton.setChecked(false);
-            heightButton.setEnabled(true);
-            widthButton.setEnabled(true);
-        }
-    }
-
-    public void objectPressed(View view){
-        if(overlay.isEnabled && !overlay.isScale){
-            overlay.switchState();
-
-            scaleButton.setChecked(false);
-            objectButton.setChecked(false);
-            heightButton.setEnabled(false);
-            widthButton.setEnabled(false);
-        }
-
-        else {
-            if (overlay.isScale) overlay.switchSelection();
-            if(!overlay.isEnabled) overlay.switchState();
-
-            scaleButton.setChecked(false);
-            objectButton.setChecked(true);
-            heightButton.setEnabled(false);
-            widthButton.setEnabled(false);
-        }
-    }
+//    public void objectPressed(View view){
+//        if(overlay.isEnabled && !overlay.isScale){
+//            overlay.switchState();
+//
+//            scaleButton.setChecked(false);
+//            objectButton.setChecked(false);
+//            heightButton.setEnabled(false);
+//            widthButton.setEnabled(false);
+//        }
+//
+//        else {
+//            if (overlay.isScale) overlay.switchSelection();
+//            if(!overlay.isEnabled) overlay.switchState();
+//
+//            scaleButton.setChecked(false);
+//            objectButton.setChecked(true);
+//            heightButton.setEnabled(false);
+//            widthButton.setEnabled(false);
+//        }
+//    }
 
     public void openHome(View view) {
         System.out.println("Success");
@@ -383,12 +382,12 @@ public class MainActivity extends ActionBarActivity {
         TouchOverlay overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
         overlay.switchSelection();
 
-        TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+        //TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
 
-        if(overlay.isScale) scaleSwitchText.setText("Scale");
-        else scaleSwitchText.setText("Object");
+       // if(overlay.isScale) scaleSwitchText.setText("Scale");
+        //else scaleSwitchText.setText("Object");
 
-        scaleSwitchText.invalidate();
+       // scaleSwitchText.invalidate();
 
     }
 
