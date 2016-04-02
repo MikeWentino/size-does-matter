@@ -14,7 +14,7 @@ import java.util.List;
 
 import Jama.*;
 
-public class touchOverlay extends View {
+public class TouchOverlay extends View {
     private final Paint pointPaint;
     private final Paint scaleLinePaint;
     private final Paint objectLinePaint;
@@ -30,11 +30,11 @@ public class touchOverlay extends View {
     private FloatPoint currentPoint;
     private FloatPoint touchDistance;
 
-    public touchOverlay(Context context) {
+    public TouchOverlay(Context context) {
         this(context, null);
     }
 
-    public touchOverlay(Context context, AttributeSet attrs) {
+    public TouchOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint.setStyle(Style.FILL);

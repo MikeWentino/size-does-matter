@@ -4,30 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Camera;
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CaptureRequest;
-import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.View;
-import android.widget.CompoundButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,24 +28,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
 
 
 public class MainActivity extends ActionBarActivity {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-    private drawState switchState;
 
-    private double scaleLength;
-    private double objectLength;
+    TouchOverlay overlay;
+    ToggleButton scaleButton;
+    ToggleButton objectButton;
+    Button heightButton;
+    Button widthButton;
 
-    private ImageView imgView;
-    private int imgViewWidth;
-    private int imgViewHeight;
-
-    private Switch scaleSwitch;
-    private TextView scaleSwitchText;
 
 
     private enum drawState {
@@ -65,32 +52,11 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
-        imgView = (ImageView) findViewById(R.id.MainImageView);
-        scaleSwitch = (Switch) findViewById(R.id.ScaleSwitch);
-        scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
-
-        scaleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                switchSelectionMode();
-            }
-        });*/
-
-        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-
-
-
-        try {
-
-            CameraCharacteristics cameraCharacteristics =  manager.getCameraCharacteristics(manager.getCameraIdList()[0]);
-
-            for(CameraCharacteristics.Key key : cameraCharacteristics.getKeys()){
-                System.out.println(key.getName() + " " + cameraCharacteristics.get(key));
-            }
-
-        }catch (CameraAccessException e){System.out.println(e.getMessage());}
-
+        overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+        scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
+        objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
+        heightButton = (Button) findViewById(R.id.HeightButton);
+        widthButton = (Button) findViewById(R.id.WidthButton);
     }
 
     // Opens camera app to get image
@@ -198,17 +164,22 @@ public class MainActivity extends ActionBarActivity {
         return mediaFile;
     }
 
-    public void switchSelectionMode(View view){
-        touchOverlay overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
-        overlay.switchSelection();
+    public void scalePressed(View view){
+        if(!overlay.isScale) overlay.switchSelection();
 
-        /*TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+        scaleButton.setChecked(true);
+        objectButton.setChecked(false);
+        heightButton.setEnabled(true);
+        widthButton.setEnabled(true);
+    }
 
-        if(overlay.isScale) scaleSwitchText.setText("Scale");
-        else scaleSwitchText.setText("Object");
+    public void objectPressed(View view){
+        if(overlay.isScale) overlay.switchSelection();
 
-        scaleSwitchText.invalidate();*/
-
+        scaleButton.setChecked(false);
+        objectButton.setChecked(true);
+        heightButton.setEnabled(false);
+        widthButton.setEnabled(false);
     }
 
 

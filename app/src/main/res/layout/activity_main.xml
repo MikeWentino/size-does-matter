@@ -30,7 +30,7 @@
         android:background="#000000"
         android:layout_below="@+id/linearLayout" />
 
-    <theperfectfit.sizedoesmatter.touchOverlay
+    <theperfectfit.sizedoesmatter.TouchOverlay
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/TouchOverlay"
@@ -61,7 +61,9 @@
             android:layout_above="@+id/MainImageView"
             android:textOff="Scale"
             android:textOn="Scale"
-            android:layout_weight="0.25" />
+            android:layout_weight="0.25"
+            android:onClick="scalePressed"
+            android:checked="true" />
 
         <ToggleButton
             android:layout_width="wrap_content"
@@ -73,7 +75,7 @@
             android:textOff="Object"
             android:textOn="Object"
             android:layout_weight="0.25"
-            android:onClick="switchSelectionMode" />
+            android:onClick="objectPressed" />
 
         <Button
             android:layout_width="wrap_content"
