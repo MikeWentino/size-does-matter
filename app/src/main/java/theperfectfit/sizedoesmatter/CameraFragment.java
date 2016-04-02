@@ -2,14 +2,27 @@ package theperfectfit.sizedoesmatter;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.hardware.Camera.*;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.support.v4.app.FragmentActivity;
+//import android.support.v4.app.FragmentManager;
+//import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+//import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +30,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.graphics.PixelFormat;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 public class CameraFragment extends android.support.v4.app.Fragment {
@@ -27,11 +44,24 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     int mCameraCurrentlyLocked;  // Camera ID that's actually acquired
     // The first rear facing camera
     int mDefaultCameraId;
+    Button mButton;
+    View mainview;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Create a container that will hold a SurfaceView for camera previews
-        mPreview = new Preview(this.getActivity());
+        //mPreview = new Preview(this.getActivity());
+        mainview = new View(this.getActivity());
+        RelativeLayout relativeLayout = new RelativeLayout(this.getActivity());
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.FILL_PARENT,
+                RelativeLayout.LayoutParams.FILL_PARENT );
+
+
+        //relativeLayout.addView(mPreview);
+        //this.getActivity().setContentView(R.layout.c_frag);
+       // mPreview = (Preview) this.getActivity().findViewById(R.id.camView);
+
 
     }
     /*@Override
@@ -50,18 +80,75 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return mPreview;
-        //return inflater.inflate(R.layout.c_frag, mPreview, false);
+        RelativeLayout relativeLayout = new RelativeLayout(this.getActivity());
+        RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.FILL_PARENT,
+                RelativeLayout.LayoutParams.FILL_PARENT);
+
+        //      mCamera = Camera.open(mCurrentCamera);
+//        mPreview.setCamera(mCamera);
+        View endV = inflater.inflate(R.layout.c_frag, relativeLayout, false);
+        mButton = (Button) endV.findViewById(R.id.take_button);
+        mPreview = (Preview) endV.findViewById(R.id.camView);
+        mCamera = mPreview.getCamera();
+        mButton.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View v) {
+                                           PictureCallback mPicture = new PictureCallback() {
+                                               @Override
+                                               public void onPictureTaken(byte[] data, Camera camera) {
+
+                                                   System.out.println("byte count is " + data.length);
+
+                                                   ByteArrayInputStream stream = new ByteArrayInputStream(data);
+
+                                                   Bitmap bitmap = BitmapFactory.decodeStream(stream);
+
+                                                   currentImage.getInstance().setBit(bitmap);
+                                                   System.out.println("Width is " + bitmap.getWidth());
+                                                   android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
+                                                   fragmentManager.popBackStack();
+                                               }
+                                           };
+
+                                           if (mCamera == null) System.out.println("cam is null");
+
+                                           mCamera.takePicture(null, null, mPicture);
+                                       }
+                                   }
+
+
+        );
+        return endV;
     }
     @Override
     public void onResume() {
         super.onResume();
+
         // Use mCurrentCamera to select the camera desired to safely restore
         // the fragment after the camera has been changed
-        mCamera = Camera.open(mCurrentCamera);
-        mCameraCurrentlyLocked = mCurrentCamera;
-        mPreview.setCamera(mCamera);
+       // mCamera = Camera.open(mCurrentCamera);
+       // mCameraCurrentlyLocked = mCurrentCamera;
+       // mPreview.setCamera(mCamera);
     }
+
+    /*public void takePicture(View cView){
+        PictureCallback mPicture = new PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] data, Camera camera) {
+
+                ByteArrayInputStream stream = new ByteArrayInputStream(data);
+
+                Bitmap bitmap = BitmapFactory.decodeStream(stream);
+
+                System.out.println(bitmap.getWidth());
+
+
+            }
+        };
+    }*/
+
+
     @Override
     public void onPause() {
         super.onPause();
@@ -125,13 +212,170 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
     SurfaceView mSurfaceView;
     SurfaceHolder mHolder;
     Size mPreviewSize;
+    Button mButton;
     List<Size> mSupportedPreviewSizes;
     Camera mCamera;
     boolean mSurfaceCreated = false;
-    Preview(Context context) {
+    public Preview(Context context) {
         super(context);
+
         mSurfaceView = new SurfaceView(context);
-        addView(mSurfaceView);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+
+        //mSurfaceView.setLayoutParams(lp);
+        //addView(mSurfaceView);
+        addViewInLayout(mSurfaceView,0,lp);
+        setCamera(Camera.open(CameraInfo.CAMERA_FACING_BACK));
+
+       /* Button b = new Button(context);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(30, 40);
+        params.leftMargin = 0;
+        params.topMargin = 0;
+        //b.setLayoutParams(lb);
+        //addView(b);
+        addViewInLayout(b,1,params);*/
+
+       /* mSurfaceView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PictureCallback mPicture = new PictureCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] data, Camera camera) {
+
+                        System.out.println("byte count is " + data.length);
+
+                        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+
+                        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+
+
+                        System.out.println("Width is " + bitmap.getWidth());
+                    }
+                };
+
+                if(mCamera == null) System.out.println("cam is null");
+
+                mCamera.takePicture(null,null,mPicture);
+
+            }
+        });*/
+
+        // Install a SurfaceHolder.Callback so we get notified when the
+        // underlying surface is created and destroyed.
+        mHolder = mSurfaceView.getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    }
+    public Preview(Context context, AttributeSet attrs) {
+        super(context,attrs);
+
+        mSurfaceView = new SurfaceView(context);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+
+        //mSurfaceView.setLayoutParams(lp);
+        //addView(mSurfaceView);
+        addViewInLayout(mSurfaceView,0,lp);
+        setCamera(Camera.open(CameraInfo.CAMERA_FACING_BACK));
+
+
+
+       /* Button b = new Button(context);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(30, 40);
+        params.leftMargin = 0;
+        params.topMargin = 0;
+        //b.setLayoutParams(lb);
+        //addView(b);
+        addViewInLayout(b,1,params);*/
+
+       /* mSurfaceView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PictureCallback mPicture = new PictureCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] data, Camera camera) {
+
+                        System.out.println("byte count is " + data.length);
+
+                        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+
+                        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+
+
+                        System.out.println("Width is " + bitmap.getWidth());
+                    }
+                };
+
+                if(mCamera == null) System.out.println("cam is null");
+
+                mCamera.takePicture(null,null,mPicture);
+
+            }
+        });*/
+
+        // Install a SurfaceHolder.Callback so we get notified when the
+        // underlying surface is created and destroyed.
+        mHolder = mSurfaceView.getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    }
+    public Preview(Context context, AttributeSet attrs, int defStyle) {
+        super(context,attrs, defStyle);
+
+        mSurfaceView = new SurfaceView(context);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+
+        //mSurfaceView.setLayoutParams(lp);
+        //addView(mSurfaceView);
+        addViewInLayout(mSurfaceView,0,lp);
+        setCamera(Camera.open(CameraInfo.CAMERA_FACING_BACK));
+
+
+       /* Button b = new Button(context);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(30, 40);
+        params.leftMargin = 0;
+        params.topMargin = 0;
+        //b.setLayoutParams(lb);
+        //addView(b);
+        addViewInLayout(b,1,params);*/
+
+
+        /*mSurfaceView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PictureCallback mPicture = new PictureCallback() {
+                    @Override
+                    public void onPictureTaken(byte[] data, Camera camera) {
+
+                        System.out.println("byte count is " + data.length);
+
+                        ByteArrayInputStream stream = new ByteArrayInputStream(data);
+
+                        Bitmap bitmap = BitmapFactory.decodeStream(stream);
+
+
+                        System.out.println("Width is " + bitmap.getWidth());
+                    }
+                };
+
+                if(mCamera == null) System.out.println("cam is null");
+
+                mCamera.takePicture(null,null,mPicture);
+
+            }
+        });*/
+
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
         mHolder = mSurfaceView.getHolder();
@@ -256,11 +500,21 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
         Camera.Parameters parameters = mCamera.getParameters();
         parameters.setPreviewSize(mPreviewSize.height, mPreviewSize.width);
+        parameters.setPictureSize(2560,1920);
         parameters.setRotation(90);
+        parameters.set("jpeg-quality", 70);
+        parameters.setPictureFormat(PixelFormat.JPEG);
         requestLayout();
+
+       // for(Size s : parameters.getSupportedPictureSizes()) System.out.println(s.width + " " + s.height);
+
         mCamera.setDisplayOrientation(90);
         mCamera.setParameters(parameters);
         mCamera.startPreview();
+    }
+
+    public Camera getCamera(){
+        return mCamera;
     }
 
 

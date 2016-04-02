@@ -3,6 +3,7 @@ package theperfectfit.sizedoesmatter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -82,6 +83,51 @@ public class MainActivity extends ActionBarActivity {
                         fragmentTransaction.replace(R.id.fragment_container,newFragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
+                        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                            @Override
+                            public void onBackStackChanged() {
+
+                                /*try{
+                                    TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
+                                    //InputStream is = getContentResolver().openInputStream(data.getData());
+                                    //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                                    //is.close();
+                                    Bitmap bitmap = currentImage.getInstance().getBit();
+                                    System.out.println(imgView.getFixedWidth() + " " + imgView.getFixedWidth());
+
+                                    float imageRatio = ((float) bitmap.getHeight())/bitmap.getWidth();
+                                    bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth()*imageRatio), false);
+                                    imgView.setImageBitmap(bitmap);
+
+                                    //getContentResolver().delete(data.getData(), null, null);
+
+                                } catch (FileNotFoundException e){
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
+                                TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
+                                //InputStream is = getContentResolver().openInputStream(data.getData());
+                                //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                                //is.close();
+                                Bitmap bitmap = currentImage.getInstance().getBit();
+                                if (bitmap != null) {
+                                    System.out.println(imgView.getFixedWidth() + " " + imgView.getFixedWidth());
+
+                                    float imageRatio = ((float) bitmap.getHeight()) / bitmap.getWidth();
+                                    bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth() * imageRatio), false);
+                                    Matrix matrix = new Matrix();
+
+                                    matrix.postRotate(90);
+
+                                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
+
+                                    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+                                    imgView.setImageBitmap(rotatedBitmap);
+                                }
+
+                            }
+                        });
                         return true;
                 }
 
