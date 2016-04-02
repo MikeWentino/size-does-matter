@@ -5,6 +5,7 @@ package theperfectfit.sizedoesmatter;
  */
 
 import Jama.Matrix;
+import Structs.FloatPoint;
 
 public class MatrixFunctions {
 

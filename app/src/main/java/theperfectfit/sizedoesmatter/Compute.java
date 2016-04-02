@@ -1,12 +1,7 @@
 package theperfectfit.sizedoesmatter;
 
-import java.util.List;
-
 import Structs.FloatPoint;
 
-/**
- * Created by Mikes Gaming on 4/1/2016.
- */
 public class Compute {
 
     public static double length(FloatPoint p1, FloatPoint p2){

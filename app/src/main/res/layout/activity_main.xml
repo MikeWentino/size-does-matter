@@ -77,26 +77,30 @@
             android:layout_weight="0.25"
             android:onClick="objectPressed" />
 
-        <Button
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Height"
-            android:id="@+id/HeightButton"
-            android:layout_above="@+id/MainImageView"
-            android:layout_toEndOf="@+id/ObjectButton"
-            android:layout_weight="0.25"
-            android:enabled="true" />
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/HeightText"
+            android:layout_weight="3"
+            android:hint="Height"
+            android:textAlignment="center"
+            android:selectAllOnFocus="true"
+            android:gravity="center_horizontal" />
 
-        <Button
+        <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Width"
-            android:id="@+id/WidthButton"
-            android:layout_below="@+id/button"
-            android:layout_alignEnd="@+id/ScaleSwitch"
-            android:layout_toEndOf="@+id/HeightButton"
-            android:layout_weight="0.25"
-            android:enabled="true" />
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/WidthText"
+            android:layout_weight="3"
+            android:hint="Width"
+            android:selectAllOnFocus="true"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+
     </LinearLayout>
 
 </RelativeLayout>

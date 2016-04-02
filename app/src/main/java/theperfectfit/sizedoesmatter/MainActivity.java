@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -37,8 +39,8 @@ public class MainActivity extends ActionBarActivity {
     TouchOverlay overlay;
     ToggleButton scaleButton;
     ToggleButton objectButton;
-    Button heightButton;
-    Button widthButton;
+    EditText heightButton;
+    EditText widthButton;
 
 
 
@@ -55,8 +57,8 @@ public class MainActivity extends ActionBarActivity {
         overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
         scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
         objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
-        heightButton = (Button) findViewById(R.id.HeightButton);
-        widthButton = (Button) findViewById(R.id.WidthButton);
+        heightButton = (EditText) findViewById(R.id.HeightText);
+        widthButton = (EditText) findViewById(R.id.WidthText);
     }
 
     // Opens camera app to get image
@@ -77,7 +79,11 @@ public class MainActivity extends ActionBarActivity {
                     TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
                     InputStream is = getContentResolver().openInputStream(data.getData());
                     Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    is.close();
+                    if(is != null) is.close();
+
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
                     System.out.println(imgView.getFixedWidth() + " " + imgView.getFixedWidth());
 
@@ -165,21 +171,45 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void scalePressed(View view){
-        if(!overlay.isScale) overlay.switchSelection();
+        if(overlay.isEnabled && overlay.isScale){
+            overlay.switchState();
 
-        scaleButton.setChecked(true);
-        objectButton.setChecked(false);
-        heightButton.setEnabled(true);
-        widthButton.setEnabled(true);
+            scaleButton.setChecked(false);
+            objectButton.setChecked(false);
+            heightButton.setEnabled(false);
+            widthButton.setEnabled(false);
+        }
+
+        else {
+            if (!overlay.isScale) overlay.switchSelection();
+            if(!overlay.isEnabled) overlay.switchState();
+
+            scaleButton.setChecked(true);
+            objectButton.setChecked(false);
+            heightButton.setEnabled(true);
+            widthButton.setEnabled(true);
+        }
     }
 
     public void objectPressed(View view){
-        if(overlay.isScale) overlay.switchSelection();
+        if(overlay.isEnabled && !overlay.isScale){
+            overlay.switchState();
 
-        scaleButton.setChecked(false);
-        objectButton.setChecked(true);
-        heightButton.setEnabled(false);
-        widthButton.setEnabled(false);
+            scaleButton.setChecked(false);
+            objectButton.setChecked(false);
+            heightButton.setEnabled(false);
+            widthButton.setEnabled(false);
+        }
+
+        else {
+            if (overlay.isScale) overlay.switchSelection();
+            if(!overlay.isEnabled) overlay.switchState();
+
+            scaleButton.setChecked(false);
+            objectButton.setChecked(true);
+            heightButton.setEnabled(false);
+            widthButton.setEnabled(false);
+        }
     }
 
 

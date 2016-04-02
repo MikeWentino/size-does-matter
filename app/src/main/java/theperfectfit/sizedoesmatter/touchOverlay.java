@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Jama.*;
+import Structs.FloatPoint;
 
 public class TouchOverlay extends View {
     private final Paint pointPaint;
@@ -25,6 +26,7 @@ public class TouchOverlay extends View {
     private List<FloatPoint> eObjectPoints;
 
     public boolean isScale;
+    public boolean isEnabled;
     private boolean calcDim = false;
     private float width;
     private float height;
@@ -42,6 +44,7 @@ public class TouchOverlay extends View {
 
     public TouchOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint.setStyle(Style.FILL);
         pointPaint.setColor(Color.RED);
@@ -60,6 +63,7 @@ public class TouchOverlay extends View {
         scalePoints = new ArrayList<>();
         objectPoints = new ArrayList<>();
         isScale = true;
+        isEnabled = true;
 
         calcCount = 0;
         eObjectPoints = new ArrayList<>();
@@ -110,12 +114,10 @@ public class TouchOverlay extends View {
         }
 
         // draw circles ontop of lines
-        for(FloatPoint fp : scalePoints){
-            if(isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
-        }
-
-        for(FloatPoint fp : objectPoints){
-            if(!isScale) canvas.drawCircle(fp.x,fp.y,10,pointPaint);
+        if(isEnabled) {
+            if (isScale)
+                for (FloatPoint fp : scalePoints) canvas.drawCircle(fp.x, fp.y, 10, pointPaint);
+            else for (FloatPoint fp : objectPoints) canvas.drawCircle(fp.x, fp.y, 10, pointPaint);
         }
 
 
@@ -123,6 +125,9 @@ public class TouchOverlay extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
+
+        // ignore touch events when not enabled
+        if(!isEnabled) return true;
 
         float touch_x = event.getX();
         float touch_y = event.getY();
@@ -166,7 +171,7 @@ public class TouchOverlay extends View {
 
     public void calculateDimensions() {
         //BEGIN TRANSFORMATION ATTEMPT
-        FloatPoint ScaleSize = new FloatPoint(3370,2125);
+        FloatPoint ScaleSize = new FloatPoint(3.370,2.125);
         FloatPoint[] SkewedScale = {scalePoints.get(0),
                 scalePoints.get(1),
                 scalePoints.get(2),
@@ -212,6 +217,12 @@ public class TouchOverlay extends View {
 
         invalidate();
 
+    }
+
+    public void switchState(){
+        isEnabled = !isEnabled;
+
+        invalidate();
     }
 
 }
