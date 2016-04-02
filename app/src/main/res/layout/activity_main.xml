@@ -98,9 +98,9 @@
 
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/MainImageView" />
+        android:layout_alignTop="@+id/textView" />
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -109,9 +109,9 @@
 
         android:layout_alignParentRight="true"
         android:layout_alignParentLeft="true"
-        android:id="@+id/linearLayout">
+        android:id="@+id/linearLayout"/>
 
-        <ToggleButton
+       <ToggleButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="New ToggleButton"

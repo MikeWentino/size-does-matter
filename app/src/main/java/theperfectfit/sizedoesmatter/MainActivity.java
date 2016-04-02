@@ -156,12 +156,12 @@ public class MainActivity extends ActionBarActivity {
        //imgView = (ImageView) findViewById(R.id.MainImageView);
 
         //Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
-
-        overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
-        scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
-        objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
-        heightButton = (EditText) findViewById(R.id.HeightText);
-        widthButton = (EditText) findViewById(R.id.WidthText);
+//
+//        overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+//        scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
+//        objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
+//        heightButton = (EditText) findViewById(R.id.HeightText);
+//        widthButton = (EditText) findViewById(R.id.WidthText);
 
     }
     @Override
