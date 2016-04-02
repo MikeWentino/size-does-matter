@@ -100,6 +100,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
 
                                                    System.out.println("byte count is " + data.length);
 
+
                                                    ByteArrayInputStream stream = new ByteArrayInputStream(data);
 
                                                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
@@ -114,6 +115,9 @@ public class CameraFragment extends android.support.v4.app.Fragment {
                                            if (mCamera == null) System.out.println("cam is null");
 
                                            mCamera.takePicture(null, null, mPicture);
+
+
+                                           System.out.println("Runng");
                                        }
                                    }
 
@@ -132,7 +136,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
        // mPreview.setCamera(mCamera);
     }
 
-    /*public void takePicture(View cView){
+    public void takePicture(View cView){
         PictureCallback mPicture = new PictureCallback() {
             @Override
             public void onPictureTaken(byte[] data, Camera camera) {
@@ -141,12 +145,12 @@ public class CameraFragment extends android.support.v4.app.Fragment {
 
                 Bitmap bitmap = BitmapFactory.decodeStream(stream);
 
-                System.out.println(bitmap.getWidth());
+                System.out.println("Running");
 
 
             }
         };
-    }*/
+    }
 
 
     @Override
@@ -500,23 +504,26 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
 
         //Camera.Parameters parameters = mCamera.getParameters();
         Camera.Parameters parameters = mCamera.getParameters();
-//        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-//
-//        if(previewSizes != null){
-//            Camera.Size previewSize = previewSizes.get(0);
-//        }
-        parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-        parameters.setPictureSize(2560,1920);
-        parameters.setRotation(90);
-        parameters.set("jpeg-quality", 70);
-        parameters.setPictureFormat(PixelFormat.JPEG);
-        requestLayout();
+        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
 
-       // for(Size s : parameters.getSupportedPictureSizes()) System.out.println(s.width + " " + s.height);
+        if(previewSizes != null) {
+            Camera.Size previewSize = getOptimalPreviewSize(previewSizes, w,h);
 
-        mCamera.setDisplayOrientation(90);
-        mCamera.setParameters(parameters);
-        mCamera.startPreview();
+            parameters.setPreviewSize(previewSize.width, previewSize.height);
+            //parameters.setPictureSize(1000,800);
+            //parameters.setRotation(90);
+            parameters.set("jpeg-quality", 70);
+            parameters.setPictureFormat(PixelFormat.JPEG);
+            requestLayout();
+
+            // for(Size s : parameters.getSupportedPictureSizes()) System.out.println(s.width + " " + s.height);
+
+            mCamera.setDisplayOrientation(90);
+            mCamera.setParameters(parameters);
+            mCamera.startPreview();
+        }
+
+
     }
 
     public Camera getCamera(){

@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -56,7 +57,10 @@ public class MainActivity extends ActionBarActivity {
     ToggleButton objectButton;
     EditText heightButton;
     EditText widthButton;
+    private drawState switchState;
 
+    private double scaleLength;
+    private double objectLength;
 
     private ImageView imgView;
     private int imgViewWidth;
@@ -77,6 +81,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
+       
         setSupportActionBar(mToolbar);
         //mToolbar.inflateMenu(R.menu.menu_main);
 
@@ -84,7 +89,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
 
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.take_picture:
                         //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -93,7 +98,7 @@ public class MainActivity extends ActionBarActivity {
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                         CameraFragment newFragment = new CameraFragment();
-                        fragmentTransaction.replace(R.id.fragment_container,newFragment);
+                        fragmentTransaction.replace(R.id.fragment_container, newFragment);
                         fragmentTransaction.addToBackStack(null);
                         fragmentTransaction.commit();
                         fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -119,13 +124,13 @@ public class MainActivity extends ActionBarActivity {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }*/
-                                TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
+                                TouchImageView imgView = (TouchImageView) findViewById(R.id.MainImageView);
                                 //InputStream is = getContentResolver().openInputStream(data.getData());
                                 //Bitmap bitmap = BitmapFactory.decodeStream(is);
                                 //is.close();
                                 Bitmap bitmap = currentImage.getInstance().getBit();
                                 if (bitmap != null) {
-                                    System.out.println(imgView.getFixedWidth() + " " + imgView.getFixedWidth());
+                                    System.out.println(imgView.getFixedWidth() + " and " + imgView.getFixedWidth());
 
                                     float imageRatio = ((float) bitmap.getHeight()) / bitmap.getWidth();
                                     bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth() * imageRatio), false);
@@ -133,15 +138,16 @@ public class MainActivity extends ActionBarActivity {
 
                                     matrix.postRotate(90);
 
-                                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap,bitmap.getWidth(),bitmap.getHeight(),true);
+                                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
 
-                                    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+                                    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
                                     imgView.setImageBitmap(rotatedBitmap);
                                 }
 
                             }
                         });
                         return true;
+
                 }
 
                 return false;
@@ -150,10 +156,21 @@ public class MainActivity extends ActionBarActivity {
 
 
 
+        switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
 
-        //switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
+       imgView = (ImageView) findViewById(R.id.MainImageView);
 
-       //imgView = (ImageView) findViewById(R.id.MainImageView);
+        scaleSwitch = (Switch) findViewById(R.id.ScaleSwitch);
+        scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+
+        scaleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                switchSelectionMode();
+
+            }
+        });
 
         //Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
 //
@@ -164,6 +181,9 @@ public class MainActivity extends ActionBarActivity {
 //        widthButton = (EditText) findViewById(R.id.WidthText);
 
     }
+
+
+
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
         menu.clear();
@@ -349,6 +369,19 @@ public class MainActivity extends ActionBarActivity {
     public void onFragmentInteraction(Uri uri){
 
     };
+
+    public void switchSelectionMode(){
+        TouchOverlay overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+        overlay.switchSelection();
+
+        TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+
+        if(overlay.isScale) scaleSwitchText.setText("Scale");
+        else scaleSwitchText.setText("Object");
+
+        scaleSwitchText.invalidate();
+
+    }
 
 
 }
