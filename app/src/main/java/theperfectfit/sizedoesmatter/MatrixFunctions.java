@@ -47,22 +47,26 @@ public class MatrixFunctions {
         double[][] p1Temp = {{SkewedScale[0].x},{SkewedScale[0].y},{1.0}};
         Matrix p1Matrix = new Matrix(p1Temp);
         System.out.println("p1(" + NormalizedScale[0].x + ", " + NormalizedScale[0].y+ "):");
-        TransformMatrix.times(p1Matrix).print(4,3);
+        Matrix result1 = TransformMatrix.times(p1Matrix);
+        result1.times(1.0/result1.get(2, 0)).print(4,3);
 
         double[][] p2Temp = {{SkewedScale[1].x},{SkewedScale[1].y},{1.0}};
         Matrix p2Matrix = new Matrix(p2Temp);
         System.out.println("p2(" + NormalizedScale[1].x + ", " + NormalizedScale[1].y+ "):");
-        TransformMatrix.times(p2Matrix).print(4,3);
+        Matrix result2 = TransformMatrix.times(p2Matrix);
+        result2.times(1.0/result2.get(2, 0)).print(4,3);
 
         double[][] p3Temp = {{SkewedScale[2].x},{SkewedScale[2].y},{1.0}};
         Matrix p3Matrix = new Matrix(p3Temp);
         System.out.println("p3(" + NormalizedScale[2].x + ", " + NormalizedScale[2].y+ "):");
-        TransformMatrix.times(p3Matrix).print(4,3);
+        Matrix result3 = TransformMatrix.times(p3Matrix);
+        result3.times(1.0/result3.get(2, 0)).print(4,3);
 
         double[][] p4Temp = {{SkewedScale[3].x},{SkewedScale[3].y},{1.0}};
         Matrix p4Matrix = new Matrix(p4Temp);
         System.out.println("p4(" + NormalizedScale[3].x + ", " + NormalizedScale[3].y+ "):");
-        TransformMatrix.times(p4Matrix).print(4,3);
+        Matrix result4 = TransformMatrix.times(p4Matrix);
+        result4.times(1.0/result4.get(2, 0)).print(4,3);
 
     }
 }
