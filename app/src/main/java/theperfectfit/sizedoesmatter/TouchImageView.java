@@ -6,9 +6,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
-/**
- * Created by Mikes Gaming on 3/9/2016.
- */
 public class TouchImageView extends ImageView{
 
     private int width;
@@ -26,8 +23,11 @@ public class TouchImageView extends ImageView{
         super.onWindowFocusChanged(focus);
 
         if(!found){
+            found = true;
             width = getWidth();
             height = getHeight();
+
+            System.out.println("Measure found: " + width + " " + height);
         }
     }
 

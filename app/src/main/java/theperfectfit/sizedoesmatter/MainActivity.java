@@ -1,8 +1,13 @@
 package theperfectfit.sizedoesmatter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -11,11 +16,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,14 +35,13 @@ import java.util.Date;
 public class MainActivity extends ActionBarActivity {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-    private drawState switchState;
 
-    private double scaleLength;
-    private double objectLength;
+    TouchOverlay overlay;
+    ToggleButton scaleButton;
+    ToggleButton objectButton;
+    EditText heightButton;
+    EditText widthButton;
 
-    private ImageView imgView;
-    private int imgViewWidth;
-    private int imgViewHeight;
 
 
     private enum drawState {
@@ -48,11 +54,19 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+<<<<<<< HEAD
         switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
 
         imgView = (ImageView) findViewById(R.id.MainImageView);
 
         Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
+=======
+        overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+        scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
+        objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
+        heightButton = (EditText) findViewById(R.id.HeightText);
+        widthButton = (EditText) findViewById(R.id.WidthText);
+>>>>>>> e13e613cb60019dc917897d8a286f07d16615411
     }
 
     // Opens camera app to get image
@@ -71,6 +85,7 @@ public class MainActivity extends ActionBarActivity {
 
                 //try{
                     TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
+<<<<<<< HEAD
                     Uri uri = data.getData();
                     //InputStream is = getContentResolver().openInputStream(data.getData());
                     Bundle bundle = data.getExtras();
@@ -79,16 +94,37 @@ public class MainActivity extends ActionBarActivity {
                     //is.close();
                     RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
                     bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
+=======
+                    InputStream is = getContentResolver().openInputStream(data.getData());
+                    Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    if(is != null) is.close();
+
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(90);
+                    bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+                    System.out.println(imgView.getFixedWidth() + " " + imgView.getFixedWidth());
+
+                    float imageRatio = ((float) bitmap.getHeight())/bitmap.getWidth();
+                    bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth()*imageRatio), false);
+>>>>>>> e13e613cb60019dc917897d8a286f07d16615411
                     imgView.setImageBitmap(bitmap);
 
-                    //loads attempted scaled image (not resizable yet)
-                    int scaledHeight = (int) ((bitmap.getHeight()*1.0)/(bitmap.getWidth()*1.0/imgView.getFixedHeight()*1.0));
+                    Log.d("USER VAR OUTPUT:::: ", "bitmap.getWidth() = " + bitmap.getWidth());
+                    Log.d("USER VAR OUTPUT:::: ", "bitmap.getHeight() = " + bitmap.getHeight());
+                    //Log.d("USER VAR OUTPUT:::: ", "imgViewWidth = " + imgViewWidth);
+                    //Log.d("USER VAR OUTPUT:::: ", "imgViewHeight = " + imgViewHeight);
+                    //Log.d("USER VAR OUTPUT:::: ", "scaledHeight = " + scaledHeight);
 
-                    Bitmap bitmap2 = Bitmap.createScaledBitmap(bitmap,imgView.getFixedWidth(),scaledHeight,false );
-                    imgView.setImageBitmap(bitmap2);
+                    /*
+                    TODO::
+                        --check if width needs to be scaled as well
+                        --check if img is in portrait view
+                    */
 
                     //getContentResolver().delete(data.getData(), null, null);
 
+<<<<<<< HEAD
 //                }catch (FileNotFoundException e){
 //                    e.printStackTrace();
 //                } catch (IOException e) {
@@ -97,6 +133,13 @@ public class MainActivity extends ActionBarActivity {
 //                catch(Exception e){
 //                    e.printStackTrace();
 //                }
+=======
+                } catch (FileNotFoundException e){
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+>>>>>>> e13e613cb60019dc917897d8a286f07d16615411
 
 
             } else if (resultCode == RESULT_CANCELED) {
@@ -107,23 +150,14 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    // Changes drawing state
-    public void switchStateChange(View v){
-        switchState = ((Switch)v).isChecked() ? drawState.Object : drawState.Scale;
-        TextView label = (TextView)findViewById(R.id.textView2);
-
-        if(switchState == drawState.Object) label.setText("Object");
-        else label.setText("Scale");
-    }
-
     // Touch event listener
     public boolean imageTouchEvent(View v,MotionEvent e) {
 
-        TextView label = (TextView)findViewById(R.id.textView);
+        //TextView label = (TextView)findViewById(R.id.textView);
         float x = e.getX();
         float y = e.getY();
 
-        label.setText(String.format("x:%f y:%f",x,y));
+        //label.setText(String.format("x:%f y:%f",x,y));
 
         return true;
     }
@@ -164,6 +198,48 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return mediaFile;
+    }
+
+    public void scalePressed(View view){
+        if(overlay.isEnabled && overlay.isScale){
+            overlay.switchState();
+
+            scaleButton.setChecked(false);
+            objectButton.setChecked(false);
+            heightButton.setEnabled(false);
+            widthButton.setEnabled(false);
+        }
+
+        else {
+            if (!overlay.isScale) overlay.switchSelection();
+            if(!overlay.isEnabled) overlay.switchState();
+
+            scaleButton.setChecked(true);
+            objectButton.setChecked(false);
+            heightButton.setEnabled(true);
+            widthButton.setEnabled(true);
+        }
+    }
+
+    public void objectPressed(View view){
+        if(overlay.isEnabled && !overlay.isScale){
+            overlay.switchState();
+
+            scaleButton.setChecked(false);
+            objectButton.setChecked(false);
+            heightButton.setEnabled(false);
+            widthButton.setEnabled(false);
+        }
+
+        else {
+            if (overlay.isScale) overlay.switchSelection();
+            if(!overlay.isEnabled) overlay.switchState();
+
+            scaleButton.setChecked(false);
+            objectButton.setChecked(true);
+            heightButton.setEnabled(false);
+            widthButton.setEnabled(false);
+        }
     }
 
 

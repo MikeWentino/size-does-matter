@@ -1,9 +1,10 @@
 package theperfectfit.sizedoesmatter;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.*;
@@ -11,33 +12,63 @@ import android.view.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class touchOverlay extends View {
+import Jama.*;
+import Structs.FloatPoint;
+
+public class TouchOverlay extends View {
     private final Paint pointPaint;
-    private final Paint linePaint;
+    private final Paint scaleLinePaint;
+    private final Paint objectLinePaint;
 
     private List<FloatPoint> points;
+    private List<FloatPoint> scalePoints;
+    private List<FloatPoint> objectPoints;
+    private List<FloatPoint> eObjectPoints;
+
+    public boolean isScale;
+    public boolean isEnabled;
     private boolean calcDim = false;
     private float width;
     private float height;
 
+    //TEMP INT
+    private int calcCount;
+    // TEMP INT
+
     private FloatPoint currentPoint;
     private FloatPoint touchDistance;
 
-    public touchOverlay(Context context) {
+    public TouchOverlay(Context context) {
         this(context, null);
     }
 
-    public touchOverlay(Context context, AttributeSet attrs) {
+    public TouchOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         pointPaint.setStyle(Style.FILL);
         pointPaint.setColor(Color.RED);
 
-        linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setStyle(Style.STROKE);
-        linePaint.setColor(Color.GREEN);
+        scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        scaleLinePaint.setStyle(Style.STROKE);
+        scaleLinePaint.setColor(Color.GREEN);
+        scaleLinePaint.setStrokeWidth(5);
+
+        objectLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        objectLinePaint.setStyle(Style.STROKE);
+        objectLinePaint.setColor(Color.BLUE);
+        objectLinePaint.setStrokeWidth(5);
 
         points = new ArrayList<>();
+        scalePoints = new ArrayList<>();
+        objectPoints = new ArrayList<>();
+        isScale = true;
+        isEnabled = true;
+
+        calcCount = 0;
+        eObjectPoints = new ArrayList<>();
+
+        points = scalePoints;
 
         currentPoint = null;
         touchDistance = null;
@@ -53,29 +84,50 @@ public class touchOverlay extends View {
             width = canvas.getWidth();
             height = canvas.getHeight();
 
-            points.add(new FloatPoint(width/4,height/4));
-            points.add(new FloatPoint(width/4*3,height/4));
-            points.add(new FloatPoint(width/4*3,height/4*3));
-            points.add(new FloatPoint(width/4,height/4*3));
+            scalePoints.add(new FloatPoint(width/8,height/8));
+            scalePoints.add(new FloatPoint(width/8*3,height/8));
+            scalePoints.add(new FloatPoint(width/8*3,height/8*3));
+            scalePoints.add(new FloatPoint(width/8,height/8*3));
+
+            objectPoints.add(new FloatPoint(width/8*5,height/8*5));
+            objectPoints.add(new FloatPoint(width/8*7,height/8*5));
+            objectPoints.add(new FloatPoint(width/8*7,height/8*7));
+            objectPoints.add(new FloatPoint(width/8*5,height/8*7));
         }
 
-        float prev_x = points.get(3).x;
-        float prev_y = points.get(3).y;
-        for(FloatPoint fp : points){
-            canvas.drawCircle(fp.x,fp.y,10,pointPaint);
-
-            canvas.drawLine(prev_x,prev_y,fp.x,fp.y,linePaint);
+        float prev_x = scalePoints.get(3).x;
+        float prev_y = scalePoints.get(3).y;
+        for(FloatPoint fp : scalePoints){
+            canvas.drawLine(prev_x,prev_y,fp.x,fp.y, scaleLinePaint);
 
             prev_x = fp.x;
             prev_y = fp.y;
         }
 
+        prev_x = objectPoints.get(3).x;
+        prev_y = objectPoints.get(3).y;
+        for(FloatPoint fp : objectPoints){
+            canvas.drawLine(prev_x,prev_y,fp.x,fp.y, objectLinePaint);
+
+            prev_x = fp.x;
+            prev_y = fp.y;
+        }
+
+        // draw circles ontop of lines
+        if(isEnabled) {
+            if (isScale)
+                for (FloatPoint fp : scalePoints) canvas.drawCircle(fp.x, fp.y, 10, pointPaint);
+            else for (FloatPoint fp : objectPoints) canvas.drawCircle(fp.x, fp.y, 10, pointPaint);
+        }
 
 
     }
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
+
+        // ignore touch events when not enabled
+        if(!isEnabled) return true;
 
         float touch_x = event.getX();
         float touch_y = event.getY();
@@ -105,27 +157,72 @@ public class touchOverlay extends View {
                 currentPoint.x = touch_x - touchDistance.x;
                 currentPoint.y = touch_y - touchDistance.y;
 
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-
-                currentPoint.x = touch_x - touchDistance.x;
-                currentPoint.y = touch_y - touchDistance.y;
+                if(currentPoint.x < 0) currentPoint.x = 0;
+                if(currentPoint.x > width) currentPoint.x = width;
+                if(currentPoint.y < 0) currentPoint.y = 0;
+                if(currentPoint.y > height) currentPoint.y = height;
 
                 invalidate();
+
                 break;
         }
         return true;
     }
+
+    public void calculateDimensions() {
+        //BEGIN TRANSFORMATION ATTEMPT
+        FloatPoint ScaleSize = new FloatPoint(3.370,2.125);
+        FloatPoint[] SkewedScale = {scalePoints.get(0),
+                scalePoints.get(1),
+                scalePoints.get(2),
+                scalePoints.get(3)};
+
+        FloatPoint[] NormalizedScale = {new FloatPoint(SkewedScale[0].x,SkewedScale[0].y),
+                new FloatPoint(SkewedScale[0].x+ScaleSize.y,SkewedScale[0].y),
+                new FloatPoint(SkewedScale[0].x+ScaleSize.y,SkewedScale[0].y+ScaleSize.x),
+                new FloatPoint(SkewedScale[0].x,SkewedScale[0].y+ScaleSize.x)};
+
+        MatrixFunctions.estimate(SkewedScale, NormalizedScale);
+        Matrix TransformMatrix = MatrixFunctions.findProjectiveMatrix(SkewedScale, NormalizedScale);
+
+        for(int i=0; i<4; i++) {
+            eObjectPoints.add(MatrixFunctions.transformPoint(objectPoints.get(i), TransformMatrix));
+        }
+
+        //Print out estimated dimensions
+        String dimensionPrint = "";
+        FloatPoint beginPoint = eObjectPoints.get(3);
+        for(int i=0; i<4; i++) {
+            FloatPoint op = eObjectPoints.get(i);
+            float distance = (float) Math.sqrt(Math.pow(beginPoint.x-op.x,2) + Math.pow(beginPoint.y-op.y,2));
+            dimensionPrint = dimensionPrint + " x " + distance;
+            beginPoint = op;
+        }
+
+        System.out.println("THE DIMENSIONS: " + dimensionPrint);
+
+        //END TRANSFORMATION ATTEMPT
+    }
+
+    public void switchSelection(){
+        System.out.println(++calcCount);
+        if(calcCount>1)
+            calculateDimensions();
+        isScale = !isScale;
+
+        if(isScale){
+            points = scalePoints;
+        }
+        else points = objectPoints;
+
+        invalidate();
+
+    }
+
+    public void switchState(){
+        isEnabled = !isEnabled;
+
+        invalidate();
+    }
+
 }
-
-class FloatPoint {
-        float x;
-        float y;
-
-        public FloatPoint(float x, float y){
-            this.x = x;
-            this.y = y;
-        }
-
-        }
