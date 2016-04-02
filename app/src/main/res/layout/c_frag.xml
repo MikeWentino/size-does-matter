@@ -1,0 +1,35 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00ffff">
+
+    <theperfectfit.sizedoesmatter.Preview
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/camView"></theperfectfit.sizedoesmatter.Preview>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X"
+        android:id="@+id/take_button"
+        android:layout_gravity="center_horizontal|bottom"/>
+    
+
+   <!-- <fragment android:name="theperfectfit.sizedoesmatter.CameraFragment"
+        android:id="@+id/camera_frag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/c_frag">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X"
+            android:id="@+id/take_button"
+            android:layout_gravity="center_horizontal|bottom" />
+
+
+        </fragment> -->
+
+
+</FrameLayout>
