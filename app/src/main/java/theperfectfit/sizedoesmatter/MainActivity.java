@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-<<<<<<< HEAD
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
-=======
->>>>>>> joes
+
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -25,9 +23,9 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-<<<<<<< HEAD
+
 import android.widget.ToggleButton;
-=======
+
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -40,7 +38,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 
->>>>>>> joes
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,15 +57,14 @@ public class MainActivity extends ActionBarActivity {
     EditText heightButton;
     EditText widthButton;
 
-<<<<<<< HEAD
-=======
+
     private ImageView imgView;
     private int imgViewWidth;
     private int imgViewHeight;
     private Toolbar mToolbar;
     private Switch scaleSwitch;
     private TextView scaleSwitchText;
->>>>>>> joes
+
 
 
     private enum drawState {
