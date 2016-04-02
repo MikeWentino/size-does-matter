@@ -7,8 +7,19 @@
         android:title="@string/action_cam"
         app:showAsAction="ifRoom"/>
 
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 
+    <item android:id="@+id/action_sizes"
+        android:title="@string/action_sizes"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/choose_scale"
+        android:icon="@drawable/scale"
+        android:title="@string/action_scale"
+        android:checked="true"
+
+        app:showAsAction="ifRoom"/>
 
 </menu>

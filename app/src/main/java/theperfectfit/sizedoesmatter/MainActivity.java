@@ -92,7 +92,7 @@ public class MainActivity extends ActionBarActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.take_picture:
                         //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
+                        System.out.print(menuItem.getItemId());
                         // start the image capture Intent
                         //startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
                         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -147,6 +147,15 @@ public class MainActivity extends ActionBarActivity {
                             }
                         });
                         return true;
+                    case R.id.choose_scale:
+                        switchSelectionMode();
+                        return true;
+
+
+
+
+
+
 
                 }
 
