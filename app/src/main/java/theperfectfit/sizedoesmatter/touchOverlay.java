@@ -10,6 +10,8 @@ import android.view.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import Structs.FloatPoint;
+
 public class touchOverlay extends View {
     private final Paint pointPaint;
     private final Paint scaleLinePaint;
@@ -163,15 +165,18 @@ public class touchOverlay extends View {
 
     }
 
+    public void updateMeasurments(){
+
+        // get lengths of scale
+        double s1 =  Compute.length(scalePoints.get(0),scalePoints.get(1));
+        double s2 =  Compute.length(scalePoints.get(1),scalePoints.get(2));
+        double s3 =  Compute.length(scalePoints.get(2),scalePoints.get(3));
+        double s4 =  Compute.length(scalePoints.get(3),scalePoints.get(0));
+
+
+
+    }
+
+
 }
 
-class FloatPoint {
-        float x;
-        float y;
-
-        public FloatPoint(float x, float y){
-            this.x = x;
-            this.y = y;
-        }
-
-        }

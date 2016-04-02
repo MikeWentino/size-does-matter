@@ -1,15 +1,27 @@
 package theperfectfit.sizedoesmatter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CaptureRequest;
+import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -23,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -51,21 +64,32 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
-
+        /*switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
         imgView = (ImageView) findViewById(R.id.MainImageView);
-
         scaleSwitch = (Switch) findViewById(R.id.ScaleSwitch);
         scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
 
         scaleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 switchSelectionMode();
-
             }
-        });
+        });*/
+
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+
+
+        try {
+
+            CameraCharacteristics cameraCharacteristics =  manager.getCameraCharacteristics(manager.getCameraIdList()[0]);
+
+            for(CameraCharacteristics.Key key : cameraCharacteristics.getKeys()){
+                System.out.println(key.getName() + " " + cameraCharacteristics.get(key));
+            }
+
+        }catch (CameraAccessException e){System.out.println(e.getMessage());}
+
     }
 
     // Opens camera app to get image
@@ -114,11 +138,11 @@ public class MainActivity extends ActionBarActivity {
     // Touch event listener
     public boolean imageTouchEvent(View v,MotionEvent e) {
 
-        TextView label = (TextView)findViewById(R.id.textView);
+        //TextView label = (TextView)findViewById(R.id.textView);
         float x = e.getX();
         float y = e.getY();
 
-        label.setText(String.format("x:%f y:%f",x,y));
+        //label.setText(String.format("x:%f y:%f",x,y));
 
         return true;
     }
@@ -165,12 +189,12 @@ public class MainActivity extends ActionBarActivity {
         touchOverlay overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
         overlay.switchSelection();
 
-        TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+        /*TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
 
         if(overlay.isScale) scaleSwitchText.setText("Scale");
         else scaleSwitchText.setText("Object");
 
-        scaleSwitchText.invalidate();
+        scaleSwitchText.invalidate();*/
 
     }
 
