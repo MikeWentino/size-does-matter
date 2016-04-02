@@ -167,22 +167,22 @@ public class touchOverlay extends View {
                 //START VISUAL ATTEMPT
                 double[][] p1Temp = {{scalePoints.get(0).x},{scalePoints.get(0).y},{1.0}};
                 Jama.Matrix p1Matrix = TransformMatrix.times(new Jama.Matrix(p1Temp));
-                FloatPoint newp1 = new FloatPoint(p1Matrix.get(0,0), p1Matrix.get(1,0));
+                FloatPoint newp1 = new FloatPoint(p1Matrix.get(0,0)/p1Matrix.get(2,0), p1Matrix.get(1,0)/p1Matrix.get(2,0));
                 objectPoints.set(0, newp1);
 
                 double[][] p2Temp = {{scalePoints.get(1).x},{scalePoints.get(1).y},{1.0}};
                 Jama.Matrix p2Matrix = TransformMatrix.times(new Jama.Matrix(p2Temp));
-                FloatPoint newp2 = new FloatPoint(p2Matrix.get(0,0), p2Matrix.get(1,0));
+                FloatPoint newp2 = new FloatPoint(p2Matrix.get(0,0)/p2Matrix.get(2,0), p2Matrix.get(1,0)/p2Matrix.get(2,0));
                 objectPoints.set(1, newp2);
 
                 double[][] p3Temp = {{scalePoints.get(2).x},{scalePoints.get(2).y},{1.0}};
                 Jama.Matrix p3Matrix = TransformMatrix.times(new Jama.Matrix(p3Temp));
-                FloatPoint newp3 = new FloatPoint(p3Matrix.get(0,0), p3Matrix.get(1,0));
+                FloatPoint newp3 = new FloatPoint(p3Matrix.get(0,0)/p3Matrix.get(2,0), p3Matrix.get(1,0)/p3Matrix.get(2,0));
                 objectPoints.set(2, newp3);
 
                 double[][] p4Temp = {{scalePoints.get(3).x},{scalePoints.get(3).y},{1.0}};
                 Jama.Matrix p4Matrix = TransformMatrix.times(new Jama.Matrix(p4Temp));
-                FloatPoint newp4 = new FloatPoint(p4Matrix.get(0,0), p4Matrix.get(1,0));
+                FloatPoint newp4 = new FloatPoint(p4Matrix.get(0,0)/p4Matrix.get(2,0), p4Matrix.get(1,0)/p4Matrix.get(2,0));
                 objectPoints.set(3, newp4);
 
                 invalidate();
