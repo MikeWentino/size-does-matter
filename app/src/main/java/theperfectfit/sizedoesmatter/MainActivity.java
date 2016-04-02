@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
+
 public class MainActivity extends ActionBarActivity {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
@@ -93,6 +94,18 @@ public class MainActivity extends ActionBarActivity {
                     float imageRatio = ((float) bitmap.getHeight())/bitmap.getWidth();
                     bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth()*imageRatio), false);
                     imgView.setImageBitmap(bitmap);
+
+                    Log.d("USER VAR OUTPUT:::: ", "bitmap.getWidth() = " + bitmap.getWidth());
+                    Log.d("USER VAR OUTPUT:::: ", "bitmap.getHeight() = " + bitmap.getHeight());
+                    //Log.d("USER VAR OUTPUT:::: ", "imgViewWidth = " + imgViewWidth);
+                    //Log.d("USER VAR OUTPUT:::: ", "imgViewHeight = " + imgViewHeight);
+                    //Log.d("USER VAR OUTPUT:::: ", "scaledHeight = " + scaledHeight);
+
+                    /*
+                    TODO::
+                        --check if width needs to be scaled as well
+                        --check if img is in portrait view
+                    */
 
                     getContentResolver().delete(data.getData(), null, null);
 
