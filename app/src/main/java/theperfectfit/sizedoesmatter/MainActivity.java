@@ -198,7 +198,7 @@ public class MainActivity extends ActionBarActivity {
         return mediaFile;
     }
 
-    public void switchSelectionMode(){
+    public void switchSelectionMode(View view){
         touchOverlay overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
         overlay.switchSelection();
 

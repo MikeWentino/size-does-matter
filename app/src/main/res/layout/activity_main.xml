@@ -61,8 +61,7 @@
             android:layout_above="@+id/MainImageView"
             android:textOff="Scale"
             android:textOn="Scale"
-            android:layout_weight="0.25"
-            android:layout_marginRight="-8.5dp" />
+            android:layout_weight="0.25" />
 
         <ToggleButton
             android:layout_width="wrap_content"
@@ -73,7 +72,8 @@
             android:layout_toEndOf="@+id/ScaleButton"
             android:textOff="Object"
             android:textOn="Object"
-            android:layout_weight="0.25" />
+            android:layout_weight="0.25"
+            android:onClick="switchSelectionMode" />
 
         <Button
             android:layout_width="wrap_content"
@@ -82,7 +82,8 @@
             android:id="@+id/HeightButton"
             android:layout_above="@+id/MainImageView"
             android:layout_toEndOf="@+id/ObjectButton"
-            android:layout_weight="0.25" />
+            android:layout_weight="0.25"
+            android:enabled="true" />
 
         <Button
             android:layout_width="wrap_content"
@@ -93,7 +94,7 @@
             android:layout_alignEnd="@+id/ScaleSwitch"
             android:layout_toEndOf="@+id/HeightButton"
             android:layout_weight="0.25"
-            android:layout_marginLeft="-7.5dp" />
+            android:enabled="true" />
     </LinearLayout>
 
 </RelativeLayout>
