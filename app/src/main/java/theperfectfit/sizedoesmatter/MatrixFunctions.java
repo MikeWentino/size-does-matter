@@ -67,6 +67,11 @@ public class MatrixFunctions {
         System.out.println("p4(" + NormalizedScale[3].x + ", " + NormalizedScale[3].y+ "):");
         Matrix result4 = TransformMatrix.times(p4Matrix);
         result4.times(1.0/result4.get(2, 0)).print(4,3);
+    }
 
+    public static FloatPoint transformPoint(FloatPoint p, Jama.Matrix m) {
+        double[][] p1Temp = {{p.x},{p.y},{1.0}};
+        Jama.Matrix p1Matrix = m.times(new Jama.Matrix(p1Temp));
+        return new FloatPoint(p1Matrix.get(0,0)/p1Matrix.get(2,0), p1Matrix.get(1,0)/p1Matrix.get(2,0));
     }
 }
