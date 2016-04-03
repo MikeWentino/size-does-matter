@@ -1,13 +1,8 @@
 package theperfectfit.sizedoesmatter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -16,18 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,7 +24,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
-    TouchOverlay overlay;
+    touchOverlay overlay;
     ToggleButton scaleButton;
     ToggleButton objectButton;
     EditText heightButton;
@@ -61,7 +49,7 @@ public class MainActivity extends ActionBarActivity {
 
         //Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
 
-        overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+        overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
         scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
         objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
         heightButton = (EditText) findViewById(R.id.HeightText);
