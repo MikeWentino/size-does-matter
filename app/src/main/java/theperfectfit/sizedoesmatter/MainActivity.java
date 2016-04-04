@@ -58,6 +58,7 @@ public class MainActivity extends ActionBarActivity {
     EditText heightButton;
     EditText widthButton;
     private drawState switchState;
+    TextView mTextView;
 
     private double scaleLength;
     private double objectLength;
@@ -153,7 +154,11 @@ public class MainActivity extends ActionBarActivity {
                         switchSelectionMode();
                         return true;
                     case R.id.calculate:
+                       // overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
                         overlay.calculateDimensions();
+                        mTextView = (TextView) findViewById(R.id.textView);
+                        mTextView.setText(overlay.calculateDimensions());
+
                         return  true;
 
                 }

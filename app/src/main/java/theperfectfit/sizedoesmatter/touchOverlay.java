@@ -46,18 +46,18 @@ public class TouchOverlay extends View {
         super(context, attrs);
 
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pointPaint.setStyle(Style.FILL);
+        pointPaint.setStyle(Style.STROKE );
         pointPaint.setColor(Color.RED);
 
         scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         scaleLinePaint.setStyle(Style.STROKE);
         scaleLinePaint.setColor(Color.GREEN);
-        scaleLinePaint.setStrokeWidth(5);
+        scaleLinePaint.setStrokeWidth(2);
 
         objectLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         objectLinePaint.setStyle(Style.STROKE);
         objectLinePaint.setColor(Color.BLUE);
-        objectLinePaint.setStrokeWidth(5);
+        objectLinePaint.setStrokeWidth(2);
 
         points = new ArrayList<>();
         scalePoints = new ArrayList<>();
@@ -169,13 +169,14 @@ public class TouchOverlay extends View {
         return true;
     }
 
-    public void calculateDimensions() {
+    public String calculateDimensions() {
         //BEGIN TRANSFORMATION ATTEMPT
         FloatPoint ScaleSize = new FloatPoint(3.370,2.125);
         FloatPoint[] SkewedScale = {scalePoints.get(0),
                 scalePoints.get(1),
                 scalePoints.get(2),
                 scalePoints.get(3)};
+        //System.out.println("THE 2: " + objectPoints.get(0).x + "  THE 2: " + objectPoints.get(0).y + "  THE 2: " + objectPoints.get(2).y);
 
         FloatPoint[] NormalizedScale = {new FloatPoint(SkewedScale[0].x,SkewedScale[0].y),
                 new FloatPoint(SkewedScale[0].x+ScaleSize.y,SkewedScale[0].y),
@@ -184,23 +185,27 @@ public class TouchOverlay extends View {
 
         MatrixFunctions.estimate(SkewedScale, NormalizedScale);
         Matrix TransformMatrix = MatrixFunctions.findProjectiveMatrix(SkewedScale, NormalizedScale);
-
+        eObjectPoints.clear();
         for(int i=0; i<4; i++) {
             eObjectPoints.add(MatrixFunctions.transformPoint(objectPoints.get(i), TransformMatrix));
         }
 
         //Print out estimated dimensions
-        String dimensionPrint = "";
+        String dimensionPrint = "Object Height: ";
+        List<Float> lf = new ArrayList<>();
         FloatPoint beginPoint = eObjectPoints.get(3);
-        for(int i=0; i<4; i++) {
+        for(int i=0; i<2; i++) {
             FloatPoint op = eObjectPoints.get(i);
+            //System.out.println("OX: " + op.x + "  OY: " + op.y);
+
             float distance = (float) Math.sqrt(Math.pow(beginPoint.x-op.x,2) + Math.pow(beginPoint.y-op.y,2));
-            dimensionPrint = dimensionPrint + " x " + distance;
+            //dimensionPrint = dimensionPrint + " x " + distance;
+            lf.add(distance);
             beginPoint = op;
         }
 
         System.out.println("THE DIMENSIONS: " + dimensionPrint);
-
+        return "Object Width: " + String.format("%.2f",lf.get(0)) + "\nObject Height: " + String.format("%.2f", lf.get(1));
         //END TRANSFORMATION ATTEMPT
     }
 
