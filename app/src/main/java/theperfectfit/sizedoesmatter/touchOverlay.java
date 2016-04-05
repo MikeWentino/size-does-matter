@@ -9,21 +9,16 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import Jama.*;
 import Structs.FloatPoint;
 
-public class TouchOverlay extends View {
+public class touchOverlay extends View {
     private final Paint pointPaint;
     private final Paint scaleLinePaint;
     private final Paint objectLinePaint;
 
-    private List<FloatPoint> points;
-    private List<FloatPoint> scalePoints;
-    private List<FloatPoint> objectPoints;
-    private List<FloatPoint> eObjectPoints;
+    private FloatPoint[] points;
+    private FloatPoint[] scalePoints;
+    private FloatPoint[] objectPoints;
 
     public boolean isScale;
     public boolean isEnabled;
@@ -37,12 +32,13 @@ public class TouchOverlay extends View {
 
     private FloatPoint currentPoint;
     private FloatPoint touchDistance;
+    private FloatPoint ScaleSize;
 
-    public TouchOverlay(Context context) {
+    public touchOverlay(Context context) {
         this(context, null);
     }
 
-    public TouchOverlay(Context context, AttributeSet attrs) {
+    public touchOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -59,14 +55,15 @@ public class TouchOverlay extends View {
         objectLinePaint.setColor(Color.BLUE);
         objectLinePaint.setStrokeWidth(5);
 
-        points = new ArrayList<>();
-        scalePoints = new ArrayList<>();
-        objectPoints = new ArrayList<>();
+        points = new FloatPoint[4];
+        scalePoints = new FloatPoint[4];
+        objectPoints = new FloatPoint[4];
         isScale = true;
         isEnabled = true;
 
+        //TransformationMatrix stuff
         calcCount = 0;
-        eObjectPoints = new ArrayList<>();
+        ScaleSize = new FloatPoint(3.370,2.125);
 
         points = scalePoints;
 
@@ -84,19 +81,19 @@ public class TouchOverlay extends View {
             width = canvas.getWidth();
             height = canvas.getHeight();
 
-            scalePoints.add(new FloatPoint(width/8,height/8));
-            scalePoints.add(new FloatPoint(width/8*3,height/8));
-            scalePoints.add(new FloatPoint(width/8*3,height/8*3));
-            scalePoints.add(new FloatPoint(width/8,height/8*3));
+            scalePoints[0] = new FloatPoint(width/8,height/8);
+            scalePoints[1] = new FloatPoint(width/8*3,height/8);
+            scalePoints[2] = new FloatPoint(width/8*3,height/8*3);
+            scalePoints[3] = new FloatPoint(width/8,height/8*3);
 
-            objectPoints.add(new FloatPoint(width/8*5,height/8*5));
-            objectPoints.add(new FloatPoint(width/8*7,height/8*5));
-            objectPoints.add(new FloatPoint(width/8*7,height/8*7));
-            objectPoints.add(new FloatPoint(width/8*5,height/8*7));
+            objectPoints[0] = new FloatPoint(width/8*5,height/8*5);
+            objectPoints[1] = new FloatPoint(width/8*7,height/8*5);
+            objectPoints[2] = new FloatPoint(width/8*7,height/8*7);
+            objectPoints[3] = new FloatPoint(width/8*5,height/8*7);
         }
 
-        float prev_x = scalePoints.get(3).x;
-        float prev_y = scalePoints.get(3).y;
+        float prev_x = scalePoints[3].x;
+        float prev_y = scalePoints[3].y;
         for(FloatPoint fp : scalePoints){
             canvas.drawLine(prev_x,prev_y,fp.x,fp.y, scaleLinePaint);
 
@@ -104,8 +101,8 @@ public class TouchOverlay extends View {
             prev_y = fp.y;
         }
 
-        prev_x = objectPoints.get(3).x;
-        prev_y = objectPoints.get(3).y;
+        prev_x = objectPoints[3].x;
+        prev_y = objectPoints[3].y;
         for(FloatPoint fp : objectPoints){
             canvas.drawLine(prev_x,prev_y,fp.x,fp.y, objectLinePaint);
 
@@ -169,39 +166,20 @@ public class TouchOverlay extends View {
         return true;
     }
 
-    public void calculateDimensions() {
-        //BEGIN TRANSFORMATION ATTEMPT
-        FloatPoint ScaleSize = new FloatPoint(3.370,2.125);
-        FloatPoint[] SkewedScale = {scalePoints.get(0),
-                scalePoints.get(1),
-                scalePoints.get(2),
-                scalePoints.get(3)};
-
-        FloatPoint[] NormalizedScale = {new FloatPoint(SkewedScale[0].x,SkewedScale[0].y),
-                new FloatPoint(SkewedScale[0].x+ScaleSize.y,SkewedScale[0].y),
-                new FloatPoint(SkewedScale[0].x+ScaleSize.y,SkewedScale[0].y+ScaleSize.x),
-                new FloatPoint(SkewedScale[0].x,SkewedScale[0].y+ScaleSize.x)};
-
-        MatrixFunctions.estimate(SkewedScale, NormalizedScale);
-        Matrix TransformMatrix = MatrixFunctions.findProjectiveMatrix(SkewedScale, NormalizedScale);
-
-        for(int i=0; i<4; i++) {
-            eObjectPoints.add(MatrixFunctions.transformPoint(objectPoints.get(i), TransformMatrix));
-        }
+    public FloatPoint[] calculateDimensions() {
+        FloatPoint[] transformedPoints = MatrixFunctions.transformPoints(ScaleSize, scalePoints, objectPoints);
 
         //Print out estimated dimensions
-        String dimensionPrint = "";
-        FloatPoint beginPoint = eObjectPoints.get(3);
-        for(int i=0; i<4; i++) {
-            FloatPoint op = eObjectPoints.get(i);
-            float distance = (float) Math.sqrt(Math.pow(beginPoint.x-op.x,2) + Math.pow(beginPoint.y-op.y,2));
-            dimensionPrint = dimensionPrint + " x " + distance;
-            beginPoint = op;
+        String dimensionPrint = "THE DIMENSIONS: "+MatrixFunctions.distance(transformedPoints[3], transformedPoints[0]);
+        FloatPoint beginPoint = transformedPoints[0];
+        for(int i=1; i<4; i++) {
+            FloatPoint endPoint = transformedPoints[i];
+            dimensionPrint = dimensionPrint + " x " + MatrixFunctions.distance(beginPoint, endPoint);
+            beginPoint = endPoint;
         }
+        System.out.println(dimensionPrint);
 
-        System.out.println("THE DIMENSIONS: " + dimensionPrint);
-
-        //END TRANSFORMATION ATTEMPT
+        return transformedPoints;
     }
 
     public void switchSelection(){

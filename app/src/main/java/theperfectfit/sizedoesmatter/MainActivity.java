@@ -1,13 +1,8 @@
 package theperfectfit.sizedoesmatter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -16,18 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -36,7 +24,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
-    TouchOverlay overlay;
+    touchOverlay overlay;
     ToggleButton scaleButton;
     ToggleButton objectButton;
     EditText heightButton;
@@ -54,11 +42,19 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+
+        //switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
+
+       //imgView = (ImageView) findViewById(R.id.MainImageView);
+
+        //Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
+
+        overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
         scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
         objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
         heightButton = (EditText) findViewById(R.id.HeightText);
         widthButton = (EditText) findViewById(R.id.WidthText);
+
     }
 
     // Opens camera app to get image
@@ -75,11 +71,21 @@ public class MainActivity extends ActionBarActivity {
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 
-                try{
+                //try{
                     TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
-                    InputStream is = getContentResolver().openInputStream(data.getData());
-                    Bitmap bitmap = BitmapFactory.decodeStream(is);
-                    if(is != null) is.close();
+
+                    Uri uri = data.getData();
+                    //InputStream is = getContentResolver().openInputStream(data.getData());
+                    Bundle bundle = data.getExtras();
+                    Bitmap bitmap = (Bitmap) bundle.get("data");
+                    //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    //is.close();
+                    //RelativeLayout theLayout = (RelativeLayout) findViewById(R.id.the_layout);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 1000, 1000, false);
+
+                    //InputStream is = getContentResolver().openInputStream(data.getData());
+                    //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                    //if(is != null) is.close();
 
                     Matrix matrix = new Matrix();
                     matrix.postRotate(90);
@@ -89,6 +95,7 @@ public class MainActivity extends ActionBarActivity {
 
                     float imageRatio = ((float) bitmap.getHeight())/bitmap.getWidth();
                     bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth()*imageRatio), false);
+
                     imgView.setImageBitmap(bitmap);
 
                     Log.d("USER VAR OUTPUT:::: ", "bitmap.getWidth() = " + bitmap.getWidth());
@@ -103,13 +110,18 @@ public class MainActivity extends ActionBarActivity {
                         --check if img is in portrait view
                     */
 
-                    getContentResolver().delete(data.getData(), null, null);
+                    //getContentResolver().delete(data.getData(), null, null);
 
-                } catch (FileNotFoundException e){
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
+//                }catch (FileNotFoundException e){
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                catch(Exception e){
+//                    e.printStackTrace();
+//                }
+
 
 
             } else if (resultCode == RESULT_CANCELED) {
