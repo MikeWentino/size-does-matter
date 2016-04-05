@@ -41,6 +41,28 @@ public class MatrixFunctions {
         return new FloatPoint(p1Matrix.get(0,0)/p1Matrix.get(2,0), p1Matrix.get(1,0)/p1Matrix.get(2,0));
     }
 
+
+    //transform all 4 target points
+//    public static FloatPoint[] transformPoints(FloatPoint ScaleSize, FloatPoint[] SkewedScale, FloatPoint[] ObjectPoints) {
+//        //TODO: add check when scale is not vertical (possibly boolean parameter)
+//        FloatPoint[] NormalizedScale = {new FloatPoint(SkewedScale[0].x,SkewedScale[0].y),
+//                new FloatPoint(SkewedScale[0].x+ScaleSize.y,SkewedScale[0].y),
+//                new FloatPoint(SkewedScale[0].x+ScaleSize.y,SkewedScale[0].y+ScaleSize.x),
+//                new FloatPoint(SkewedScale[0].x,SkewedScale[0].y+ScaleSize.x)};
+//
+//        FloatPoint[] transformedPoints = new FloatPoint[4];
+//        for(int i=0; i<4; i++)
+//            transformedPoints[i] = transformPoint(ObjectPoints[i], findProjectiveMatrix(SkewedScale, NormalizedScale));
+//
+//        return transformedPoints;
+//    }
+
+//    public static float distance(FloatPoint begin, FloatPoint end) {
+//        return (float) Math.sqrt(Math.pow(begin.x-end.x,2) + Math.pow(begin.y-end.y,2));
+//    }
+//}
+
+
     //transform all 4 target points
     public static FloatPoint[] transformPoints(FloatPoint ScaleSize, FloatPoint[] SkewedScale, FloatPoint[] ObjectPoints) {
         //TODO: add check when scale is not vertical (possibly boolean parameter)
@@ -59,4 +81,19 @@ public class MatrixFunctions {
     public static float distance(FloatPoint begin, FloatPoint end) {
         return (float) Math.sqrt(Math.pow(begin.x-end.x,2) + Math.pow(begin.y-end.y,2));
     }
+
+    public static float[] calculateSides(FloatPoint[] corners) {
+        //Print out estimated dimensions
+        float[] returner = new float[4];
+        FloatPoint beginPoint = corners[0];
+        for(int i=1; i<4; i++) {
+            FloatPoint endPoint = corners[i];
+            returner[i-1] = MatrixFunctions.distance(beginPoint, endPoint);
+            beginPoint = endPoint;
+        }
+        returner[3] = MatrixFunctions.distance(beginPoint, corners[3]);
+        return returner;
+    }
+
 }
+

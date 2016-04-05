@@ -3,6 +3,12 @@ package theperfectfit.sizedoesmatter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
+
+
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -11,9 +17,30 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import android.widget.Button;
+import android.widget.CompoundButton;
+
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import android.widget.ToggleButton;
+
+import android.view.Menu;
+import android.view.MenuItem;
+
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -24,11 +51,23 @@ public class MainActivity extends ActionBarActivity {
 
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
-    touchOverlay overlay;
+    TouchOverlay overlay;
     ToggleButton scaleButton;
     ToggleButton objectButton;
     EditText heightButton;
     EditText widthButton;
+    private drawState switchState;
+    TextView mTextView;
+
+    private double scaleLength;
+    private double objectLength;
+
+    private ImageView imgView;
+    private int imgViewWidth;
+    private int imgViewHeight;
+    private Toolbar mToolbar;
+    private Switch scaleSwitch;
+    private TextView scaleSwitchText;
 
 
 
@@ -41,22 +80,137 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+       overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+        setSupportActionBar(mToolbar);
+        //mToolbar.inflateMenu(R.menu.menu_main);
+
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+
+                switch (menuItem.getItemId()) {
+                    case R.id.take_picture:
+                        //Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        System.out.print(menuItem.getItemId());
+                        //mToolbar.isClickable() = false;
+                        // start the image capture Intent
+                        //startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.popBackStack();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                        CameraFragment newFragment = new CameraFragment();
+                        fragmentTransaction.replace(R.id.fragment_container, newFragment);
+                        fragmentTransaction.addToBackStack(null);
+                        fragmentTransaction.commit();
+                        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                            @Override
+                            public void onBackStackChanged() {
+
+                                /*try{
+                                    TouchImageView imgView = (TouchImageView)findViewById(R.id.MainImageView);
+                                    //InputStream is = getContentResolver().openInputStream(data.getData());
+                                    //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                                    //is.close();
+                                    Bitmap bitmap = currentImage.getInstance().getBit();
+                                    System.out.println(imgView.getFixedWidth() + " " + imgView.getFixedWidth());
+
+                                    float imageRatio = ((float) bitmap.getHeight())/bitmap.getWidth();
+                                    bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth()*imageRatio), false);
+                                    imgView.setImageBitmap(bitmap);
+
+                                    //getContentResolver().delete(data.getData(), null, null);
+
+                                } catch (FileNotFoundException e){
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }*/
+                                TouchImageView imgView = (TouchImageView) findViewById(R.id.MainImageView);
+                                //InputStream is = getContentResolver().openInputStream(data.getData());
+                                //Bitmap bitmap = BitmapFactory.decodeStream(is);
+                                //is.close();
+                                Bitmap bitmap = currentImage.getInstance().getBit();
+                                if (bitmap != null) {
+                                    System.out.println(imgView.getFixedWidth() + " and " + imgView.getFixedWidth());
+
+                                    float imageRatio = ((float) bitmap.getHeight()) / bitmap.getWidth();
+                                    bitmap = Bitmap.createScaledBitmap(bitmap, imgView.getFixedWidth(), Math.round(imgView.getFixedWidth() * imageRatio), false);
+                                    Matrix matrix = new Matrix();
+
+                                    matrix.postRotate(90);
+
+                                    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
+
+                                    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+                                    imgView.setImageBitmap(rotatedBitmap);
+                                }
+
+                            }
+                        });
+                        return true;
+                    case R.id.choose_scale:
+                        switchSelectionMode();
+                        return true;
+                    case R.id.calculate:
+                       // overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+                        overlay.calculateDimensions();
+                        mTextView = (TextView) findViewById(R.id.textView);
+                        mTextView.setText(overlay.calculateDimensions());
+
+                        return  true;
+
+                }
+
+                return false;
+            }
+        });
 
 
-        //switchState = ((Switch) findViewById(R.id.switch1)).isChecked() ? drawState.Object : drawState.Scale;
 
-       //imgView = (ImageView) findViewById(R.id.MainImageView);
+//        switchState = ((Switch) findViewById(R.id.ScaleSwitch)).isChecked() ? drawState.Object : drawState.Scale;
+//
+//       imgView = (ImageView) findViewById(R.id.MainImageView);
+//
+//        scaleSwitch = (Switch) findViewById(R.id.ScaleSwitch);
+//        scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+//
+//        scaleSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//
+//                switchSelectionMode();
+//
+//            }
+//        });
 
         //Log.d("", "-------------------------------------- " + String.valueOf(imgView.getMeasuredHeight()) + " " + String.valueOf(imgView.getHeight()));
-
-        overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
-        scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
-        objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
-        heightButton = (EditText) findViewById(R.id.HeightText);
-        widthButton = (EditText) findViewById(R.id.WidthText);
+//
+//        overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+//        scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
+//        objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
+//        heightButton = (EditText) findViewById(R.id.HeightText);
+//        widthButton = (EditText) findViewById(R.id.WidthText);
 
     }
 
+
+
+
+       // overlay = (touchOverlay) findViewById(R.id.TouchOverlay);
+//        scaleButton = (ToggleButton)  findViewById(R.id.ScaleButton);
+//        objectButton = (ToggleButton)  findViewById(R.id.ObjectButton);
+//        heightButton = (EditText) findViewById(R.id.HeightText);
+//        widthButton = (EditText) findViewById(R.id.WidthText);
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        menu.clear();
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
     // Opens camera app to get image
     public void createCameraIntent(View v){
         // create Intent to take a picture and return control to the calling application
@@ -182,48 +336,72 @@ public class MainActivity extends ActionBarActivity {
         return mediaFile;
     }
 
-    public void scalePressed(View view){
-        if(overlay.isEnabled && overlay.isScale){
-            overlay.switchState();
+//    public void scalePressed(View view){
+//        if(overlay.isEnabled && overlay.isScale){
+//            overlay.switchState();
+//
+//            scaleButton.setChecked(false);
+//            objectButton.setChecked(false);
+//            heightButton.setEnabled(false);
+//            widthButton.setEnabled(false);
+//        }
+//
+//        else {
+//            if (!overlay.isScale) overlay.switchSelection();
+//            if(!overlay.isEnabled) overlay.switchState();
+//
+//            scaleButton.setChecked(true);
+//            objectButton.setChecked(false);
+//            heightButton.setEnabled(true);
+//            widthButton.setEnabled(true);
+//        }
+//    }
 
-            scaleButton.setChecked(false);
-            objectButton.setChecked(false);
-            heightButton.setEnabled(false);
-            widthButton.setEnabled(false);
-        }
+//    public void objectPressed(View view){
+//        if(overlay.isEnabled && !overlay.isScale){
+//            overlay.switchState();
+//
+//            scaleButton.setChecked(false);
+//            objectButton.setChecked(false);
+//            heightButton.setEnabled(false);
+//            widthButton.setEnabled(false);
+//        }
+//
+//        else {
+//            if (overlay.isScale) overlay.switchSelection();
+//            if(!overlay.isEnabled) overlay.switchState();
+//
+//            scaleButton.setChecked(false);
+//            objectButton.setChecked(true);
+//            heightButton.setEnabled(false);
+//            widthButton.setEnabled(false);
+//        }
+//    }
 
-        else {
-            if (!overlay.isScale) overlay.switchSelection();
-            if(!overlay.isEnabled) overlay.switchState();
-
-            scaleButton.setChecked(true);
-            objectButton.setChecked(false);
-            heightButton.setEnabled(true);
-            widthButton.setEnabled(true);
-        }
+    public void openHome(View view) {
+        System.out.println("Success");
     }
 
-    public void objectPressed(View view){
-        if(overlay.isEnabled && !overlay.isScale){
-            overlay.switchState();
 
-            scaleButton.setChecked(false);
-            objectButton.setChecked(false);
-            heightButton.setEnabled(false);
-            widthButton.setEnabled(false);
-        }
-
-        else {
-            if (overlay.isScale) overlay.switchSelection();
-            if(!overlay.isEnabled) overlay.switchState();
-
-            scaleButton.setChecked(false);
-            objectButton.setChecked(true);
-            heightButton.setEnabled(false);
-            widthButton.setEnabled(false);
-        }
+    public void onFragmentInteractionHome(Uri uri) {
+        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
     }
+    public void onFragmentInteraction(Uri uri){
 
+    };
+
+    public void switchSelectionMode(){
+        TouchOverlay overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
+        overlay.switchSelection();
+
+        //TextView scaleSwitchText = (TextView) findViewById(R.id.ScaleSwitchText);
+
+       // if(overlay.isScale) scaleSwitchText.setText("Scale");
+        //else scaleSwitchText.setText("Object");
+
+       // scaleSwitchText.invalidate();
+
+    }
 
 
 }

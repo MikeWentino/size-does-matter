@@ -5,12 +5,15 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.providers.media.MediaProvider" />
-
+    <uses-feature android:name="android.hardware.Camera" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
     <application
         android:allowBackup="true"
         android:icon="@drawable/panda_icon"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
+        android:theme="@style/MainTheme"
         android:name =".App">
         <activity
             android:name=".SplashActivity"
@@ -24,7 +27,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/MainTheme">
         </activity>
     </application>
 

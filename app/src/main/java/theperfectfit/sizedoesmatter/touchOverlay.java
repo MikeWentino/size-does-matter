@@ -11,7 +11,7 @@ import android.view.*;
 
 import Structs.FloatPoint;
 
-public class touchOverlay extends View {
+public class TouchOverlay extends View {
     private final Paint pointPaint;
     private final Paint scaleLinePaint;
     private final Paint objectLinePaint;
@@ -26,44 +26,47 @@ public class touchOverlay extends View {
     private float width;
     private float height;
 
-    //TEMP INT
-    private int calcCount;
-    // TEMP INT
-
     private FloatPoint currentPoint;
     private FloatPoint touchDistance;
     private FloatPoint ScaleSize;
 
-    public touchOverlay(Context context) {
+    public TouchOverlay(Context context) {
         this(context, null);
     }
 
-    public touchOverlay(Context context, AttributeSet attrs) {
+    public TouchOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pointPaint.setStyle(Style.FILL);
+        pointPaint.setStyle(Style.STROKE );
         pointPaint.setColor(Color.RED);
 
         scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         scaleLinePaint.setStyle(Style.STROKE);
         scaleLinePaint.setColor(Color.GREEN);
-        scaleLinePaint.setStrokeWidth(5);
+        scaleLinePaint.setStrokeWidth(2);
 
         objectLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         objectLinePaint.setStyle(Style.STROKE);
         objectLinePaint.setColor(Color.BLUE);
-        objectLinePaint.setStrokeWidth(5);
+        objectLinePaint.setStrokeWidth(2);
 
         points = new FloatPoint[4];
         scalePoints = new FloatPoint[4];
         objectPoints = new FloatPoint[4];
+
         isScale = true;
         isEnabled = true;
 
         //TransformationMatrix stuff
-        calcCount = 0;
+
         ScaleSize = new FloatPoint(3.370,2.125);
+
+
+        ScaleSize = new FloatPoint(3.370,2.125);
+        isScale = true;
+        isEnabled = true;
+
 
         points = scalePoints;
 
@@ -166,26 +169,34 @@ public class touchOverlay extends View {
         return true;
     }
 
-    public FloatPoint[] calculateDimensions() {
-        FloatPoint[] transformedPoints = MatrixFunctions.transformPoints(ScaleSize, scalePoints, objectPoints);
 
-        //Print out estimated dimensions
-        String dimensionPrint = "THE DIMENSIONS: "+MatrixFunctions.distance(transformedPoints[3], transformedPoints[0]);
-        FloatPoint beginPoint = transformedPoints[0];
-        for(int i=1; i<4; i++) {
-            FloatPoint endPoint = transformedPoints[i];
-            dimensionPrint = dimensionPrint + " x " + MatrixFunctions.distance(beginPoint, endPoint);
-            beginPoint = endPoint;
-        }
-        System.out.println(dimensionPrint);
+//    public FloatPoint[] calculateDimensions() {
+//        FloatPoint[] transformedPoints = MatrixFunctions.transformPoints(ScaleSize, scalePoints, objectPoints);
+//
+//        //Print out estimated dimensions
+//        String dimensionPrint = "THE DIMENSIONS: " + MatrixFunctions.distance(transformedPoints[3], transformedPoints[0]);
+//        FloatPoint beginPoint = transformedPoints[0];
+//        for (int i = 1; i < 4; i++) {
+//            FloatPoint endPoint = transformedPoints[i];
+//            dimensionPrint = dimensionPrint + " x " + MatrixFunctions.distance(beginPoint, endPoint);
+//            beginPoint = endPoint;
+//        }
+//        System.out.println(dimensionPrint);
+//
+//        return transformedPoints;
+//
+//    }
 
-        return transformedPoints;
+    public String calculateDimensions() {
+
+        float[] lf = MatrixFunctions.calculateSides(MatrixFunctions.transformPoints(ScaleSize, scalePoints, objectPoints));
+
+        return "Object Width: " + String.format("%.2f",lf[0]) + "\nObject Height: " + String.format("%.2f", lf[1]);
+        //END TRANSFORMATION ATTEMPT
+
     }
 
     public void switchSelection(){
-        System.out.println(++calcCount);
-        if(calcCount>1)
-            calculateDimensions();
         isScale = !isScale;
 
         if(isScale){

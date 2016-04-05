@@ -1,6 +1,37 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+
+
+
+    <item
+        android:id="@+id/take_picture"
+        android:icon="@drawable/cam_icon"
+        android:title="@string/action_cam"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/choose_scale"
+        android:icon="@drawable/scale"
+        android:title="@string/action_scale"
+        android:checked="true"
+        app:showAsAction="always"/>
+
+
+    <item
+        android:id="@+id/calculate"
+        android:icon="@drawable/calculator"
+        android:title="@string/action_cam"
+        app:showAsAction="always"/>
+
+
+    <item android:id="@+id/action_settings"
+        android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+
+    <item android:id="@+id/action_sizes"
+        android:title="@string/action_sizes"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+
+
 </menu>

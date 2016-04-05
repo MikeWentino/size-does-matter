@@ -9,5 +9,4 @@
             android:gravity="center"
             android:src="@mipmap/rulr_logo"/>
     </item>
-
 </layer-list>
