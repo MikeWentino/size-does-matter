@@ -1,15 +1,12 @@
-package theperfectfit.sizedoesmatter;
+package Singletons;
 
 import android.graphics.Bitmap;
 
-/**
- * Created by Joseph on 4/1/2016.
- */
-public class currentImage {
+public class CurrentImage {
     private  Bitmap imageBit;
-    private static currentImage ourInstance = new currentImage();
+    private static CurrentImage ourInstance = new CurrentImage();
 
-    public static currentImage getInstance() {
+    public static CurrentImage getInstance() {
         return ourInstance;
     }
 
@@ -20,7 +17,7 @@ public class currentImage {
         Bitmap temp = imageBit;
         return temp;
     }
-    private currentImage() {
+    private CurrentImage() {
         imageBit = null;
     }
 }

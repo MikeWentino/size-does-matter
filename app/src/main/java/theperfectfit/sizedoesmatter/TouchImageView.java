@@ -1,9 +1,7 @@
 package theperfectfit.sizedoesmatter;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 public class TouchImageView extends ImageView{
@@ -14,8 +12,6 @@ public class TouchImageView extends ImageView{
 
     public TouchImageView(Context context, AttributeSet attrs){
         super(context, attrs);
-
-
     }
 
     @Override
@@ -26,8 +22,6 @@ public class TouchImageView extends ImageView{
             found = true;
             width = getWidth();
             height = getHeight();
-
-            System.out.println("Measure found: " + width + " " + height);
         }
     }
 
@@ -38,10 +32,6 @@ public class TouchImageView extends ImageView{
     public int getFixedHeight(){
         return height;
     }
-
-
-
-
 }
 
 

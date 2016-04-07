@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-/**
- * Created by plaga on 2/21/2016.
- */
 public class SplashActivity extends ActionBarActivity{
 
     @Override

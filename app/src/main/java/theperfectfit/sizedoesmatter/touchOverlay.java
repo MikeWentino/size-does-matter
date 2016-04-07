@@ -37,8 +37,9 @@ public class TouchOverlay extends View {
     public TouchOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        // create colors for lines and circles
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pointPaint.setStyle(Style.STROKE );
+        pointPaint.setStyle(Style.STROKE);
         pointPaint.setColor(Color.RED);
 
         scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -51,25 +52,18 @@ public class TouchOverlay extends View {
         objectLinePaint.setColor(Color.BLUE);
         objectLinePaint.setStrokeWidth(2);
 
-        points = new FloatPoint[4];
+        // point arrays for scale/object
         scalePoints = new FloatPoint[4];
         objectPoints = new FloatPoint[4];
 
         isScale = true;
         isEnabled = true;
 
-        //TransformationMatrix stuff
-
-        ScaleSize = new FloatPoint(3.370,2.125);
-
-
+        // TransformationMatrix stuff
         ScaleSize = new FloatPoint(3.370,2.125);
         isScale = true;
         isEnabled = true;
-
-
         points = scalePoints;
-
         currentPoint = null;
         touchDistance = null;
     }
@@ -79,11 +73,13 @@ public class TouchOverlay extends View {
     @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // runs once and sets the init locations
         if(!calcDim){
             calcDim = true;
             width = canvas.getWidth();
             height = canvas.getHeight();
 
+            // set initial location of touch interface points
             scalePoints[0] = new FloatPoint(width/8,height/8);
             scalePoints[1] = new FloatPoint(width/8*3,height/8);
             scalePoints[2] = new FloatPoint(width/8*3,height/8*3);
@@ -95,6 +91,7 @@ public class TouchOverlay extends View {
             objectPoints[3] = new FloatPoint(width/8*5,height/8*7);
         }
 
+        // draw interconnecting lines
         float prev_x = scalePoints[3].x;
         float prev_y = scalePoints[3].y;
         for(FloatPoint fp : scalePoints){
@@ -113,11 +110,12 @@ public class TouchOverlay extends View {
             prev_y = fp.y;
         }
 
-        // draw circles ontop of lines
+        // draw circles at corners
         if(isEnabled) {
             if (isScale)
                 for (FloatPoint fp : scalePoints) canvas.drawCircle(fp.x, fp.y, 10, pointPaint);
-            else for (FloatPoint fp : objectPoints) canvas.drawCircle(fp.x, fp.y, 10, pointPaint);
+            else
+                for (FloatPoint fp : objectPoints) canvas.drawCircle(fp.x, fp.y, 10, pointPaint);
         }
 
 
@@ -133,11 +131,13 @@ public class TouchOverlay extends View {
         float touch_y = event.getY();
 
         switch (event.getAction()) {
+
+            // when touch interface is just pressed
             case MotionEvent.ACTION_DOWN:
 
+                // select and move the closest point to the finger
                 float minDistance = Float.MAX_VALUE;
                 FloatPoint closestFp = null;
-
                 for(FloatPoint fp : points){
                     float distance = (float) Math.sqrt(Math.pow(touch_x-fp.x,2) + Math.pow(touch_y-fp.y,2));
 
@@ -148,54 +148,47 @@ public class TouchOverlay extends View {
                 }
 
                 currentPoint = closestFp;
+
+                // save distance from point so it will remain static
                 touchDistance = new FloatPoint(touch_x-currentPoint.x,touch_y-currentPoint.y);
 
                 invalidate();
                 break;
-            case MotionEvent.ACTION_MOVE:
 
+            // when the touch interface is dragged
+            case MotionEvent.ACTION_MOVE:
                 currentPoint.x = touch_x - touchDistance.x;
                 currentPoint.y = touch_y - touchDistance.y;
 
+                // prevent points from going out of bounds
                 if(currentPoint.x < 0) currentPoint.x = 0;
                 if(currentPoint.x > width) currentPoint.x = width;
                 if(currentPoint.y < 0) currentPoint.y = 0;
                 if(currentPoint.y > height) currentPoint.y = height;
 
                 invalidate();
-
                 break;
         }
         return true;
     }
 
-
-//    public FloatPoint[] calculateDimensions() {
-//        FloatPoint[] transformedPoints = MatrixFunctions.transformPoints(ScaleSize, scalePoints, objectPoints);
-//
-//        //Print out estimated dimensions
-//        String dimensionPrint = "THE DIMENSIONS: " + MatrixFunctions.distance(transformedPoints[3], transformedPoints[0]);
-//        FloatPoint beginPoint = transformedPoints[0];
-//        for (int i = 1; i < 4; i++) {
-//            FloatPoint endPoint = transformedPoints[i];
-//            dimensionPrint = dimensionPrint + " x " + MatrixFunctions.distance(beginPoint, endPoint);
-//            beginPoint = endPoint;
-//        }
-//        System.out.println(dimensionPrint);
-//
-//        return transformedPoints;
-//
-//    }
-
+    // returns string of calculated dimensions
     public String calculateDimensions() {
 
+        // get lengths of all sides
         float[] lf = MatrixFunctions.calculateSides(MatrixFunctions.transformPoints(ScaleSize, scalePoints, objectPoints));
 
-        return "Object Width: " + String.format("%.2f",lf[0]) + "\nObject Height: " + String.format("%.2f", lf[1]);
-        //END TRANSFORMATION ATTEMPT
+        for(float f : lf)System.out.println(f);
 
+        // average the width and height
+        float avg_width = (lf[0] + lf[2]) / 2;
+        float avg_height = (lf[1] + lf[3]) / 2;
+
+        // return string representing the results
+        return "Object Width: " + String.format("%.2f",avg_width) + "\nObject Height: " + String.format("%.2f", avg_height);
     }
 
+    // switches touch selected between scale and object
     public void switchSelection(){
         isScale = !isScale;
 
@@ -208,6 +201,7 @@ public class TouchOverlay extends View {
 
     }
 
+    // enables or disables touch interface
     public void switchState(){
         isEnabled = !isEnabled;
 

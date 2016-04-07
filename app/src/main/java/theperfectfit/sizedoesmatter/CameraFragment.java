@@ -1,10 +1,5 @@
 package theperfectfit.sizedoesmatter;
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -15,17 +10,10 @@ import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.support.v4.app.FragmentActivity;
 //import android.support.v4.app.FragmentManager;
 //import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 //import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -36,6 +24,9 @@ import android.graphics.PixelFormat;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+
+import Singletons.CurrentImage;
+
 public class CameraFragment extends android.support.v4.app.Fragment {
     private Preview mPreview;
     Camera mCamera;
@@ -105,7 +96,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
 
                                                    Bitmap bitmap = BitmapFactory.decodeStream(stream);
 
-                                                   currentImage.getInstance().setBit(bitmap);
+                                                   CurrentImage.getInstance().setBit(bitmap);
                                                    System.out.println("Width is " + bitmap.getWidth());
                                                    android.support.v4.app.FragmentManager fragmentManager = getFragmentManager();
                                                    fragmentManager.popBackStack();
