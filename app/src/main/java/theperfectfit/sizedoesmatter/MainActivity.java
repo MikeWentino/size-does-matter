@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.support.v7.widget.Toolbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.Toast;
+
 import Singletons.CurrentImage;
 
 public class MainActivity extends ActionBarActivity {
@@ -84,7 +86,7 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
             // save button
             case R.id.save:
                 SaveMeasurements.saveTouchImage(mainActivity.getWindow(),mainActivity);
-                System.out.println("Dims saved");
+                Toast.makeText(mainActivity.getApplicationContext(),"Image saved",Toast.LENGTH_SHORT).show();
                 break;
 
             // button has not been mapped

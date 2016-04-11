@@ -39,7 +39,7 @@ public class TouchOverlay extends View {
 
         // create colors for lines and circles
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pointPaint.setStyle(Style.STROKE);
+        pointPaint.setStyle(Style.FILL);
         pointPaint.setColor(Color.RED);
 
         scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);

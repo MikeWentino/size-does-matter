@@ -19,6 +19,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.graphics.PixelFormat;
 import java.io.ByteArrayInputStream;
@@ -35,7 +36,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     int mCameraCurrentlyLocked;  // Camera ID that's actually acquired
     // The first rear facing camera
     int mDefaultCameraId;
-    Button mButton;
+    ImageButton mButton;
     View mainview;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         //      mCamera = Camera.open(mCurrentCamera);
 //        mPreview.setCamera(mCamera);
         View endV = inflater.inflate(R.layout.c_frag, relativeLayout, false);
-        mButton = (Button) endV.findViewById(R.id.take_button);
+        mButton = (ImageButton) endV.findViewById(R.id.take_button);
         mPreview = (Preview) endV.findViewById(R.id.camView);
         mCamera = mPreview.getCamera();
         mButton.setOnClickListener(new View.OnClickListener() {
