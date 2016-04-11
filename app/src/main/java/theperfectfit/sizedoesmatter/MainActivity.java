@@ -81,6 +81,12 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
                 mainActivity.mTextView.setText(mainActivity.overlay.calculateDimensions());
                 break;
 
+            // save button
+            case R.id.save:
+                SaveMeasurements.saveTouchImage(mainActivity.getWindow(),mainActivity);
+                System.out.println("Dims saved");
+                break;
+
             // button has not been mapped
             default : return false;
         }
