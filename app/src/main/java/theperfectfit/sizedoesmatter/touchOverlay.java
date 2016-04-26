@@ -1,13 +1,20 @@
 package theperfectfit.sizedoesmatter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.*;
+import android.widget.ImageView;
 
 import Structs.FloatPoint;
 
@@ -30,16 +37,19 @@ public class TouchOverlay extends View {
     private FloatPoint touchDistance;
     private FloatPoint ScaleSize;
 
+    private ImageView zoomView;
+    private Bitmap zoomMap;
+
     public TouchOverlay(Context context) {
         this(context, null);
     }
 
     public TouchOverlay(Context context, AttributeSet attrs) {
         super(context, attrs);
-
+        //zoomView = (TouchImageView) R.
         // create colors for lines and circles
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pointPaint.setStyle(Style.FILL);
+        pointPaint.setStyle(Style.STROKE );
         pointPaint.setColor(Color.RED);
 
         scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -66,6 +76,7 @@ public class TouchOverlay extends View {
         points = scalePoints;
         currentPoint = null;
         touchDistance = null;
+
     }
 
 
@@ -157,21 +168,75 @@ public class TouchOverlay extends View {
 
             // when the touch interface is dragged
             case MotionEvent.ACTION_MOVE:
-                currentPoint.x = touch_x - touchDistance.x;
-                currentPoint.y = touch_y - touchDistance.y;
+                currentPoint.x = touch_x/2 - touchDistance.x;
+                currentPoint.y = touch_y/2 - touchDistance.y;
+                Float scaleX = currentPoint.x;
+                Float scaleY = currentPoint.y;
 
-                // prevent points from going out of bounds
+
                 if(currentPoint.x < 0) currentPoint.x = 0;
                 if(currentPoint.x > width) currentPoint.x = width;
                 if(currentPoint.y < 0) currentPoint.y = 0;
                 if(currentPoint.y > height) currentPoint.y = height;
+                getScaleBitmap(zoomMap,scaleX,scaleY);
 
                 invalidate();
+
                 break;
         }
         return true;
     }
+    public void setTouchImageView(ImageView touchView, Bitmap bMap) {
+        zoomView = touchView;
+        //zoomMap = Bitmap.createScaledBitmap(bMap,4*bMap.getWidth(),4*bMap.getHeight(),false);
+        zoomMap = bMap;
+    }
+    private void setMap(Bitmap bMap){
+        zoomView.setImageBitmap(bMap);
+    }
 
+    public void getScaleBitmap(Bitmap bitmap, Float x, Float y) {
+        int x2 = Math.round(bitmap.getWidth()/8);
+
+        int y2 = Math.round(bitmap.getHeight()/8);
+
+        int x1 = Math.round(x - (bitmap.getWidth()/(16)));
+
+        int y1 = Math.round(y - (bitmap.getHeight()/(16)));
+
+        if (x1 < 0)
+            x1 = 0;
+        if (y1 < 0)
+            y1 = 0;
+        if (x1 + x2 > bitmap.getWidth())
+            x2 = bitmap.getWidth() - x1;
+        if (y2 + y1 > bitmap.getHeight())
+            y2 = bitmap.getHeight() - y1;
+
+
+        Bitmap output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
+        Paint nP = new Paint();
+        nP.setStyle(Style.STROKE );
+        nP.setColor(Color.BLACK);
+        nP.setStrokeWidth(2);
+        Canvas oCan = new Canvas(output);
+        float sx0 = output.getWidth()/(2);
+        float sy0 = output.getHeight()/(2);
+        float sx1 = 4*output.getWidth()/(32);
+        float sx2 = 15*output.getWidth()/(32);
+        float sx3 = 17*output.getWidth()/(32);
+        float sx4 = 28*output.getWidth()/(32);
+        float sy1 = 8*output.getHeight()/(32);
+        float sy2 = 15*output.getHeight()/(32);
+        float sy3 = 17*output.getHeight()/(32);
+        float sy4 = 24*output.getHeight()/(32);
+        oCan.drawLine(sx1,sy0,sx2,sy0, nP);
+        oCan.drawLine(sx3,sy0,sx4,sy0, nP);
+        oCan.drawLine(sx0,sy1,sx0,sy2, nP);
+        oCan.drawLine(sx0,sy3,sx0,sy4, nP);
+        zoomView.setImageDrawable(new BitmapDrawable(getResources(),output));
+
+    }
     // returns string of calculated dimensions
     public String calculateDimensions() {
 
