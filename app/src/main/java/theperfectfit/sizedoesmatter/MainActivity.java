@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -110,6 +111,8 @@ class BackStackListener implements FragmentManager.OnBackStackChangedListener {
     @Override
     public void onBackStackChanged() {
         TouchImageView imgView = (TouchImageView) mainActivity.findViewById(R.id.MainImageView);
+        TouchOverlay overlay = (TouchOverlay) mainActivity.findViewById(R.id.TouchOverlay);
+        ImageView imgView2 = (ImageView) mainActivity.findViewById(R.id.ZoomImageView);
         Bitmap bitmap = CurrentImage.getInstance().getBit();
         if (bitmap != null) {
             System.out.println(imgView.getFixedWidth() + " and " + imgView.getFixedWidth());
@@ -126,9 +129,11 @@ class BackStackListener implements FragmentManager.OnBackStackChangedListener {
             Matrix matrix = new Matrix();
             matrix.postRotate(90);
             Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-
+            Bitmap finBmap = Bitmap.createScaledBitmap(rotatedBitmap,imgView.getWidth(),imgView.getHeight(),true);
             // set imgview to use temp bitmap
-            imgView.setImageBitmap(rotatedBitmap);
+            imgView.setImageBitmap(finBmap);
+            overlay.setTouchImageView(imgView2, finBmap);
+            //imgView2.setImageBitmap(rotatedBitmap);
         }
     }
 }

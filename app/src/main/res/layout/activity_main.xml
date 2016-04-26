@@ -81,6 +81,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         class="theperfectfit.sizedoesmatter.TouchImageView"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:id="@+id/MainImageView"
         android:layout_below="@id/toolbar"
         android:layout_alignParentLeft="true"
@@ -88,11 +90,24 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:background="#000000" />
+        android:background="#000000">
+
+
+
+
+
+    </view>
         <!-- android:layout_below="@+id/linearLayout"
                 android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"-->
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:id="@+id/ZoomImageView"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentRight="true"
 
+        android:background="#FFFFFF" />
 
 
     <theperfectfit.sizedoesmatter.TouchOverlay
