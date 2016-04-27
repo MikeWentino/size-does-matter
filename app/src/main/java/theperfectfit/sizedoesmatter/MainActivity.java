@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -113,6 +114,7 @@ class BackStackListener implements FragmentManager.OnBackStackChangedListener {
         TouchImageView imgView = (TouchImageView) mainActivity.findViewById(R.id.MainImageView);
         TouchOverlay overlay = (TouchOverlay) mainActivity.findViewById(R.id.TouchOverlay);
         ImageView imgView2 = (ImageView) mainActivity.findViewById(R.id.ZoomImageView);
+        Switch setS = (Switch) mainActivity.findViewById(R.id.switch1);
         Bitmap bitmap = CurrentImage.getInstance().getBit();
         if (bitmap != null) {
             System.out.println(imgView.getFixedWidth() + " and " + imgView.getFixedWidth());
@@ -133,7 +135,8 @@ class BackStackListener implements FragmentManager.OnBackStackChangedListener {
             // set imgview to use temp bitmap
             imgView.setImageBitmap(finBmap);
             overlay.setTouchImageView(imgView2, finBmap);
-            //imgView2.setImageBitmap(rotatedBitmap);
+            setS.setVisibility(View.VISIBLE);
+            overlay.setSwitch(setS);
         }
     }
 }

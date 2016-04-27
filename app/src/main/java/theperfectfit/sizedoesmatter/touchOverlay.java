@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.*;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import Structs.FloatPoint;
 
@@ -39,6 +40,7 @@ public class TouchOverlay extends View {
 
     private ImageView zoomView;
     private Bitmap zoomMap;
+    private Switch zoomSet;
 
     public TouchOverlay(Context context) {
         this(context, null);
@@ -78,7 +80,9 @@ public class TouchOverlay extends View {
         touchDistance = null;
 
     }
-
+    public void setSwitch(Switch setS){
+        zoomSet = setS;
+    }
 
 
     @Override protected void onDraw(Canvas canvas) {
@@ -161,49 +165,58 @@ public class TouchOverlay extends View {
                 currentPoint = closestFp;
 
                 // save distance from point so it will remain static
-                touchDistance = new FloatPoint(touch_x-currentPoint.x,touch_y-currentPoint.y);
+                if (zoomSet.isChecked())
+                    touchDistance = new FloatPoint(touch_x/2-currentPoint.x,touch_y/2-currentPoint.y);
+                else
+                    touchDistance = new FloatPoint(touch_x-currentPoint.x,touch_y-currentPoint.y);
 
                 invalidate();
                 break;
 
             // when the touch interface is dragged
             case MotionEvent.ACTION_MOVE:
-                currentPoint.x = touch_x/2 - touchDistance.x;
-                currentPoint.y = touch_y/2 - touchDistance.y;
-                Float scaleX = currentPoint.x;
-                Float scaleY = currentPoint.y;
-
-
-                if(currentPoint.x < 0) currentPoint.x = 0;
-                if(currentPoint.x > width) currentPoint.x = width;
-                if(currentPoint.y < 0) currentPoint.y = 0;
-                if(currentPoint.y > height) currentPoint.y = height;
-                getScaleBitmap(zoomMap,scaleX,scaleY);
-
+                if (zoomSet.isChecked()) {
+                    zoomView.setVisibility(View.VISIBLE);
+                    currentPoint.x = touch_x / 2 - touchDistance.x;
+                    currentPoint.y = touch_y / 2 - touchDistance.y;
+                    if (currentPoint.x < 0) currentPoint.x = 0;
+                    if (currentPoint.x > width) currentPoint.x = width;
+                    if (currentPoint.y < 0) currentPoint.y = 0;
+                    if (currentPoint.y > height) currentPoint.y = height;
+                    getScaleBitmap(zoomMap, currentPoint.x, currentPoint.y);
+                }
+                else {
+                    currentPoint.x = touch_x - touchDistance.x;
+                    currentPoint.y = touch_y - touchDistance.y;
+                    if (currentPoint.x < 0) currentPoint.x = 0;
+                    if (currentPoint.x > width) currentPoint.x = width;
+                    if (currentPoint.y < 0) currentPoint.y = 0;
+                    if (currentPoint.y > height) currentPoint.y = height;
+                }
                 invalidate();
+                //zoomView.setVisibility(View.INVISIBLE);
 
                 break;
+            case MotionEvent.ACTION_UP:
+                zoomView.setVisibility(View.INVISIBLE);
         }
         return true;
     }
     public void setTouchImageView(ImageView touchView, Bitmap bMap) {
         zoomView = touchView;
-        //zoomMap = Bitmap.createScaledBitmap(bMap,4*bMap.getWidth(),4*bMap.getHeight(),false);
         zoomMap = bMap;
     }
     private void setMap(Bitmap bMap){
         zoomView.setImageBitmap(bMap);
     }
 
+    //Creates zoomed in bitmap on region user is currently measuring
     public void getScaleBitmap(Bitmap bitmap, Float x, Float y) {
+        //calculate section of main bitmap to display in zoomed region
         int x2 = Math.round(bitmap.getWidth()/8);
-
         int y2 = Math.round(bitmap.getHeight()/8);
-
         int x1 = Math.round(x - (bitmap.getWidth()/(16)));
-
         int y1 = Math.round(y - (bitmap.getHeight()/(16)));
-
         if (x1 < 0)
             x1 = 0;
         if (y1 < 0)
@@ -212,8 +225,6 @@ public class TouchOverlay extends View {
             x2 = bitmap.getWidth() - x1;
         if (y2 + y1 > bitmap.getHeight())
             y2 = bitmap.getHeight() - y1;
-
-
         Bitmap output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
         Paint nP = new Paint();
         nP.setStyle(Style.STROKE );
