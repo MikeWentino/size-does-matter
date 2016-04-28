@@ -1,5 +1,7 @@
 package theperfectfit.sizedoesmatter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +18,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import Singletons.CurrentImage;
+import Structs.FloatPoint;
 
 public class MainActivity extends ActionBarActivity {
     TouchOverlay overlay;
@@ -90,6 +93,26 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
                 SaveMeasurements.saveTouchImage(mainActivity.getWindow(),mainActivity);
                 Toast.makeText(mainActivity.getApplicationContext(),"Image saved",Toast.LENGTH_SHORT).show();
                 break;
+            // size select menu
+            case R.id.action_sizes:
+                CharSequence colors[] = new CharSequence[] {"8.5\"x11\" piece of paper", "3.370\"x2.125\" credit card"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
+                builder.setTitle("Pick a scale size");
+                builder.setItems(colors, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which==0) {
+                            mainActivity.overlay.ScaleSize = new FloatPoint(8.5,11);
+                            Toast.makeText(mainActivity.getApplicationContext(),"Scale changed to 8.5x11 (Paper)",Toast.LENGTH_SHORT).show();
+                        } else if(which==1) {
+                            mainActivity.overlay.ScaleSize = new FloatPoint(3.370,2.125);
+                            Toast.makeText(mainActivity.getApplicationContext(),"Scale changed to 3.370x2.125 (Credit card)",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                builder.show();
+
 
             // button has not been mapped
             default : return false;
