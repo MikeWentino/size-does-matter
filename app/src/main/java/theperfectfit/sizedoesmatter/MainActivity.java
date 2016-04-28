@@ -100,7 +100,7 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
                 break;
             // size select menu
             case R.id.action_sizes:
-                CharSequence colors[] = new CharSequence[] {"8.5\"x11\" piece of paper (portrait)", "2.125\"x3.370\" credit card (portrait)",
+                CharSequence colors[] = new CharSequence[] {"8.5\"x11\" DEFAULT: piece of paper (portrait)", "2.125\"x3.370\" credit card (portrait)",
                         "11\"x8.5\" piece of paper (landscape)", "3.370\"x2.125\" credit card (landscape)"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);

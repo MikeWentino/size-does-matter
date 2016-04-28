@@ -72,7 +72,7 @@ public class TouchOverlay extends View {
         isEnabled = true;
 
         // TransformationMatrix stuff
-        ScaleSize = new FloatPoint(8.5,11);
+        ScaleSize = new FloatPoint(11,8.5);
         isScale = true;
         isEnabled = true;
         points = scalePoints;
