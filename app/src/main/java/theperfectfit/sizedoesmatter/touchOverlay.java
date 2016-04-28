@@ -220,15 +220,36 @@ public class TouchOverlay extends View {
         int y2 = Math.round(bitmap.getHeight()/8);
         int x1 = Math.round(x - (bitmap.getWidth()/(16)));
         int y1 = Math.round(y - (bitmap.getHeight()/(16)));
-        if (x1 < 0)
-            x1 = 0;
-        if (y1 < 0)
-            y1 = 0;
-        if (x1 + x2 > bitmap.getWidth())
-            x2 = bitmap.getWidth() - x1;
-        if (y2 + y1 > bitmap.getHeight())
-            y2 = bitmap.getHeight() - y1;
+
+
         Bitmap output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
+        if (x1 < 0) {
+            Rect r1 = new Rect(x1*-1,bitmap.getHeight()/16,x1*-1,bitmap.getHeight()/16);
+            x2 += x1;
+            output = Bitmap.createBitmap(bitmap.getWidth() / 8, bitmap.getHeight() / 8, Bitmap.Config.ARGB_8888);
+            Canvas fixedCanvas = new Canvas(output);
+            Paint fixedPaint = new Paint();
+            fixedPaint.setColor(Color.BLACK);
+            fixedPaint.setStyle(Style.FILL);
+            fixedCanvas.drawRect(0, 0,bitmap.getWidth() / 8, bitmap.getHeight() / 8, fixedPaint);
+            Paint nullPaint = new Paint();
+            fixedCanvas.drawBitmap(Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 ), -1 * x1, 0, nullPaint);
+        }
+
+        if (y1 < 0) {
+            y1 = 0;
+        }
+        if (x1 + x2 > bitmap.getWidth()) {
+            x2 = bitmap.getWidth() - x1;
+        }
+        if (y2 + y1 > bitmap.getHeight()) {
+            y2 = bitmap.getHeight() - y1;
+        }
+
+        if(x1 > 0) {
+            output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
+        }
+
         Paint nP = new Paint();
         nP.setStyle(Style.STROKE );
         nP.setColor(Color.BLACK);
@@ -248,7 +269,11 @@ public class TouchOverlay extends View {
         oCan.drawLine(sx3,sy0,sx4,sy0, nP);
         oCan.drawLine(sx0,sy1,sx0,sy2, nP);
         oCan.drawLine(sx0,sy3,sx0,sy4, nP);
-        zoomView.setImageDrawable(new BitmapDrawable(getResources(),output));
+
+        //oCan.drawRect();
+
+        zoomView.setImageBitmap(output);
+
 
     }
     // returns string of calculated dimensions

@@ -33,14 +33,7 @@
     </view>
 
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="150dp"
-        android:id="@+id/ZoomImageView"
-        android:layout_below="@id/toolbar"
-        android:layout_alignParentRight="true"
-        android:visibility="invisible"
-        />
+
 
 
     <theperfectfit.sizedoesmatter.TouchOverlay
@@ -61,6 +54,14 @@
         android:layout_below="@id/toolbar"
         android:visibility="invisible"/>
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:id="@+id/ZoomImageView"
+        android:layout_below="@id/toolbar"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
