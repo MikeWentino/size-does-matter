@@ -38,13 +38,6 @@
         android:title="@string/action_sizes"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/change_paper"
-        android:title="Change to paper"
-        android:orderInCategory="100" app:showAsAction="never" />
-
-    <item android:id="@+id/change_card"
-        android:title="Change to card"
-        android:orderInCategory="100" app:showAsAction="never" />
 
 
 
