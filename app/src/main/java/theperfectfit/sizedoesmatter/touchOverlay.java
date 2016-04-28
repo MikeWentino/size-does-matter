@@ -36,7 +36,7 @@ public class TouchOverlay extends View {
 
     private FloatPoint currentPoint;
     private FloatPoint touchDistance;
-    private FloatPoint ScaleSize;
+    public FloatPoint ScaleSize;
 
     private ImageView zoomView;
     private Bitmap zoomMap;
@@ -72,7 +72,7 @@ public class TouchOverlay extends View {
         isEnabled = true;
 
         // TransformationMatrix stuff
-        ScaleSize = new FloatPoint(3.370,2.125);
+        ScaleSize = new FloatPoint(8.5,11);
         isScale = true;
         isEnabled = true;
         points = scalePoints;
