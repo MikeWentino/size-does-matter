@@ -165,40 +165,43 @@ public class TouchOverlay extends View {
                 currentPoint = closestFp;
 
                 // save distance from point so it will remain static
-                if (zoomSet.isChecked())
-                    touchDistance = new FloatPoint(touch_x/2-currentPoint.x,touch_y/2-currentPoint.y);
-                else
-                    touchDistance = new FloatPoint(touch_x-currentPoint.x,touch_y-currentPoint.y);
-
+                if (zoomSet != null) {
+                    if (zoomSet.isChecked())
+                        touchDistance = new FloatPoint(touch_x / 2 - currentPoint.x, touch_y / 2 - currentPoint.y);
+                    else
+                        touchDistance = new FloatPoint(touch_x - currentPoint.x, touch_y - currentPoint.y);
+                }
                 invalidate();
                 break;
 
             // when the touch interface is dragged
             case MotionEvent.ACTION_MOVE:
-                if (zoomSet.isChecked()) {
-                    zoomView.setVisibility(View.VISIBLE);
-                    currentPoint.x = touch_x / 2 - touchDistance.x;
-                    currentPoint.y = touch_y / 2 - touchDistance.y;
-                    if (currentPoint.x < 0) currentPoint.x = 0;
-                    if (currentPoint.x > width) currentPoint.x = width;
-                    if (currentPoint.y < 0) currentPoint.y = 0;
-                    if (currentPoint.y > height) currentPoint.y = height;
-                    getScaleBitmap(zoomMap, currentPoint.x, currentPoint.y);
-                }
-                else {
-                    currentPoint.x = touch_x - touchDistance.x;
-                    currentPoint.y = touch_y - touchDistance.y;
-                    if (currentPoint.x < 0) currentPoint.x = 0;
-                    if (currentPoint.x > width) currentPoint.x = width;
-                    if (currentPoint.y < 0) currentPoint.y = 0;
-                    if (currentPoint.y > height) currentPoint.y = height;
+                if (zoomSet != null) {
+                    if (zoomSet.isChecked()) {
+                        zoomView.setVisibility(View.VISIBLE);
+                        currentPoint.x = touch_x / 2 - touchDistance.x;
+                        currentPoint.y = touch_y / 2 - touchDistance.y;
+                        if (currentPoint.x < 0) currentPoint.x = 0;
+                        if (currentPoint.x > width) currentPoint.x = width;
+                        if (currentPoint.y < 0) currentPoint.y = 0;
+                        if (currentPoint.y > height) currentPoint.y = height;
+                        getScaleBitmap(zoomMap, currentPoint.x, currentPoint.y);
+                    } else {
+                        currentPoint.x = touch_x - touchDistance.x;
+                        currentPoint.y = touch_y - touchDistance.y;
+                        if (currentPoint.x < 0) currentPoint.x = 0;
+                        if (currentPoint.x > width) currentPoint.x = width;
+                        if (currentPoint.y < 0) currentPoint.y = 0;
+                        if (currentPoint.y > height) currentPoint.y = height;
+                    }
                 }
                 invalidate();
                 //zoomView.setVisibility(View.INVISIBLE);
 
                 break;
             case MotionEvent.ACTION_UP:
-                zoomView.setVisibility(View.INVISIBLE);
+                if (zoomView != null)
+                    zoomView.setVisibility(View.INVISIBLE);
         }
         return true;
     }
