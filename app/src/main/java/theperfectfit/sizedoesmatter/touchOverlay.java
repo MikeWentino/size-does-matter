@@ -36,7 +36,7 @@ public class TouchOverlay extends View {
 
     private FloatPoint currentPoint;
     private FloatPoint touchDistance;
-    private FloatPoint ScaleSize;
+    public FloatPoint ScaleSize;
 
     private ImageView zoomView;
     private Bitmap zoomMap;
@@ -51,7 +51,7 @@ public class TouchOverlay extends View {
         //zoomView = (TouchImageView) R.
         // create colors for lines and circles
         pointPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        pointPaint.setStyle(Style.STROKE );
+        pointPaint.setStyle(Style.FILL_AND_STROKE );
         pointPaint.setColor(Color.RED);
 
         scaleLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -72,7 +72,7 @@ public class TouchOverlay extends View {
         isEnabled = true;
 
         // TransformationMatrix stuff
-        ScaleSize = new FloatPoint(3.370,2.125);
+        ScaleSize = new FloatPoint(11,8.5);
         isScale = true;
         isEnabled = true;
         points = scalePoints;
