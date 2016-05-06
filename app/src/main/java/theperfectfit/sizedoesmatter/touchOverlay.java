@@ -22,7 +22,9 @@ import Structs.FloatPoint;
 public class TouchOverlay extends View {
     private final Paint pointPaint;
     private final Paint scaleLinePaint;
+    private final Paint scaleLinePaintTwo;
     private final Paint objectLinePaint;
+    private final Paint objectLinePaintTwo;
 
     private FloatPoint[] points;
     private FloatPoint[] scalePoints;
@@ -59,10 +61,20 @@ public class TouchOverlay extends View {
         scaleLinePaint.setColor(Color.GREEN);
         scaleLinePaint.setStrokeWidth(2);
 
+        scaleLinePaintTwo = new Paint(Paint.ANTI_ALIAS_FLAG);
+        scaleLinePaintTwo.setStyle(Style.STROKE);
+        scaleLinePaintTwo.setColor(Color.parseColor("#FBEC5D"));
+        scaleLinePaintTwo.setStrokeWidth(2);
+
         objectLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         objectLinePaint.setStyle(Style.STROKE);
         objectLinePaint.setColor(Color.BLUE);
         objectLinePaint.setStrokeWidth(2);
+
+        objectLinePaintTwo = new Paint(Paint.ANTI_ALIAS_FLAG);
+        objectLinePaintTwo.setStyle(Style.STROKE);
+        objectLinePaintTwo.setColor(Color.parseColor("#87CEFF"));
+        objectLinePaintTwo.setStrokeWidth(2);
 
         // point arrays for scale/object
         scalePoints = new FloatPoint[4];
@@ -109,20 +121,31 @@ public class TouchOverlay extends View {
         // draw interconnecting lines
         float prev_x = scalePoints[3].x;
         float prev_y = scalePoints[3].y;
-        for(FloatPoint fp : scalePoints){
-            canvas.drawLine(prev_x,prev_y,fp.x,fp.y, scaleLinePaint);
+        for(int i = 0; i < scalePoints.length; i++){
+        //for(FloatPoint fp : scalePoints){
+            if(i % 2 == 0)
+                canvas.drawLine(prev_x,prev_y,scalePoints[i].x,scalePoints[i].y, scaleLinePaint);
+            else
+                canvas.drawLine(prev_x,prev_y,scalePoints[i].x,scalePoints[i].y, scaleLinePaintTwo);
 
-            prev_x = fp.x;
-            prev_y = fp.y;
+            prev_x = scalePoints[i].x;
+            prev_y = scalePoints[i].y;
         }
 
         prev_x = objectPoints[3].x;
         prev_y = objectPoints[3].y;
-        for(FloatPoint fp : objectPoints){
-            canvas.drawLine(prev_x,prev_y,fp.x,fp.y, objectLinePaint);
+        for(int i = 0; i < objectPoints.length; i++){
+        //for(FloatPoint fp : objectPoints){
 
-            prev_x = fp.x;
-            prev_y = fp.y;
+            if(i % 2 == 0)
+                canvas.drawLine(prev_x,prev_y,objectPoints[i].x,objectPoints[i].y, objectLinePaint);
+            else
+                canvas.drawLine(prev_x,prev_y,objectPoints[i].x,objectPoints[i].y, objectLinePaintTwo);
+
+            //canvas.drawLine(prev_x,prev_y,fp.x,fp.y, objectLinePaint);
+
+            prev_x = objectPoints[i].x;
+            prev_y = objectPoints[i].y;
         }
 
         // draw circles at corners
@@ -281,6 +304,12 @@ public class TouchOverlay extends View {
     public String calculateDimensions() {
 
         // get lengths of all sides
+
+
+        //Unlock this later
+        //organizeFloatPoints();
+
+
         float[] lf = MatrixFunctions.calculateSides(MatrixFunctions.transformPoints(ScaleSize, scalePoints, objectPoints));
 
         for(float f : lf)System.out.println(f);
@@ -291,6 +320,58 @@ public class TouchOverlay extends View {
 
         // return string representing the results
         return "Object Width: " + String.format("%.2f",avg_width) + "\nObject Height: " + String.format("%.2f", avg_height);
+    }
+
+
+    public void organizeFloatPoints(){
+        float holderX;
+        float holderY;
+        if(scalePoints[0].x > scalePoints[1].x){
+            if(scalePoints[0].y > scalePoints[2].y){
+                swapValues(true,0,2);
+            }
+            else{
+                swapValues(true,0,1);
+            }
+        }
+        else if(scalePoints[0].y > scalePoints[3].y){
+            if(scalePoints[0].x > scalePoints[2].x){
+                swapValues(true,0,2);
+            }
+            else{
+                swapValues(true,0,3);
+            }
+        }
+        else if(scalePoints[0].x > scalePoints[2].x || scalePoints[0].y > scalePoints[2].y){
+            swapValues(true,0,2);
+        }
+
+        if(scalePoints[1].y > scalePoints[2].y){
+            if(scalePoints[1].x < scalePoints[3].x){
+                swapValues(true,1,3);
+            }
+            else {
+                swapValues(true, 1, 2);
+            }
+        }
+        else if(scalePoints[1].y > scalePoints[3].y || scalePoints[2].x < scalePoints[2].x){
+            swapValues(true,1,3);
+        }
+
+    }
+
+    public void swapValues(boolean pointType, int firstPoint, int secondPoint){
+        float holderX;
+        float holderY;
+        if(pointType){
+            holderX = scalePoints[firstPoint].x;
+            holderY = scalePoints[firstPoint].y;
+            scalePoints[firstPoint].x = scalePoints[secondPoint].x;
+            scalePoints[firstPoint].y = scalePoints[secondPoint].y;
+            scalePoints[secondPoint].x = holderX;
+            scalePoints[secondPoint].y = holderY;
+        }
+        //this.refreshDrawableState();
     }
 
     // switches touch selected between scale and object
