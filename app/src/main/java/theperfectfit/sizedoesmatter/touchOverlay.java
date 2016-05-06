@@ -222,9 +222,9 @@ public class TouchOverlay extends View {
         int y1 = Math.round(y - (bitmap.getHeight()/(16)));
 
 
-        Bitmap output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
         if (x1 < 0) {
-            Rect r1 = new Rect(x1*-1,bitmap.getHeight()/16,x1*-1,bitmap.getHeight()/16);
+            x1 = 0;
+           /* Rect r1 = new Rect(x1*-1,bitmap.getHeight()/16,x1*-1,bitmap.getHeight()/16);
             x2 += x1;
             output = Bitmap.createBitmap(bitmap.getWidth() / 8, bitmap.getHeight() / 8, Bitmap.Config.ARGB_8888);
             Canvas fixedCanvas = new Canvas(output);
@@ -233,7 +233,7 @@ public class TouchOverlay extends View {
             fixedPaint.setStyle(Style.FILL);
             fixedCanvas.drawRect(0, 0,bitmap.getWidth() / 8, bitmap.getHeight() / 8, fixedPaint);
             Paint nullPaint = new Paint();
-            fixedCanvas.drawBitmap(Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 ), -1 * x1, 0, nullPaint);
+            fixedCanvas.drawBitmap(Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 ), -1 * x1, 0, nullPaint);*/
         }
 
         if (y1 < 0) {
@@ -246,9 +246,10 @@ public class TouchOverlay extends View {
             y2 = bitmap.getHeight() - y1;
         }
 
-        if(x1 > 0) {
-            output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
-        }
+        //if(x1 > 0) {
+        //    output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
+        //}
+        Bitmap output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
 
         Paint nP = new Paint();
         nP.setStyle(Style.STROKE );
