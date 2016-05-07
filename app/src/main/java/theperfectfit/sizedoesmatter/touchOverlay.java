@@ -244,51 +244,53 @@ public class TouchOverlay extends View {
         int x1 = Math.round(x - (bitmap.getWidth()/(16)));
         int y1 = Math.round(y - (bitmap.getHeight()/(16)));
 
-
+        int tempx1=0;
+        int tempx2=0;
+        int tempy1=0;
+        int tempy2=0;
         if (x1 < 0) {
+            tempx1 = x1;
             x1 = 0;
-           /* Rect r1 = new Rect(x1*-1,bitmap.getHeight()/16,x1*-1,bitmap.getHeight()/16);
-            x2 += x1;
-            output = Bitmap.createBitmap(bitmap.getWidth() / 8, bitmap.getHeight() / 8, Bitmap.Config.ARGB_8888);
-            Canvas fixedCanvas = new Canvas(output);
-            Paint fixedPaint = new Paint();
-            fixedPaint.setColor(Color.BLACK);
-            fixedPaint.setStyle(Style.FILL);
-            fixedCanvas.drawRect(0, 0,bitmap.getWidth() / 8, bitmap.getHeight() / 8, fixedPaint);
-            Paint nullPaint = new Paint();
-            fixedCanvas.drawBitmap(Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 ), -1 * x1, 0, nullPaint);*/
+
         }
 
         if (y1 < 0) {
+            tempy1 = y1;
             y1 = 0;
         }
         if (x1 + x2 > bitmap.getWidth()) {
-            x2 = bitmap.getWidth() - x1;
+            tempx1 = x1 + x2 - bitmap.getWidth();
+            //x2 = bitmap.getWidth();
+            x1 = bitmap.getWidth() - x2;
         }
         if (y2 + y1 > bitmap.getHeight()) {
-            y2 = bitmap.getHeight() - y1;
+            tempy1 = y1 +y2 - bitmap.getHeight();
+            //y2 = bitmap.getHeight();
+            y1 = bitmap.getHeight() - y2;
         }
 
         //if(x1 > 0) {
         //    output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
         //}
-        Bitmap output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2 );
+        Bitmap output = Bitmap.createBitmap(bitmap,x1 ,y1 ,x2 ,y2);
 
         Paint nP = new Paint();
         nP.setStyle(Style.STROKE );
         nP.setColor(Color.BLACK);
         nP.setStrokeWidth(2);
         Canvas oCan = new Canvas(output);
-        float sx0 = output.getWidth()/(2);
-        float sy0 = output.getHeight()/(2);
-        float sx1 = 4*output.getWidth()/(32);
-        float sx2 = 15*output.getWidth()/(32);
-        float sx3 = 17*output.getWidth()/(32);
-        float sx4 = 28*output.getWidth()/(32);
-        float sy1 = 8*output.getHeight()/(32);
-        float sy2 = 15*output.getHeight()/(32);
-        float sy3 = 17*output.getHeight()/(32);
-        float sy4 = 24*output.getHeight()/(32);
+        float geth = output.getHeight();
+        float getw = output.getWidth();
+        float sx0 = getw/(2) + tempx1;
+        float sy0 = geth/(2) + tempy1;
+        float sx1 = 4*getw/(32) + tempx1;
+        float sx2 = 15*getw/(32) + tempx1;
+        float sx3 = 17*getw/(32) + tempx1;
+        float sx4 = 28*getw/(32) + tempx1;
+        float sy1 = 8*geth/(32) + tempy1;
+        float sy2 = 15*geth/(32) + tempy1;
+        float sy3 = 17*geth/(32) + tempy1;
+        float sy4 = 24*geth/(32) + tempy1;
         oCan.drawLine(sx1,sy0,sx2,sy0, nP);
         oCan.drawLine(sx3,sy0,sx4,sy0, nP);
         oCan.drawLine(sx0,sy1,sx0,sy2, nP);
