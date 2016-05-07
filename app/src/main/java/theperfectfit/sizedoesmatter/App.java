@@ -5,10 +5,10 @@ import android.os.SystemClock;
 
 import java.util.concurrent.TimeUnit;
 
-public class App extends Application{
+public class App extends Application {
 
     @Override
-    public void onCreate(){
+    public void onCreate() {
         super.onCreate();
 
     }

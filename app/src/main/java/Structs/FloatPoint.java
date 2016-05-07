@@ -9,8 +9,8 @@ public class FloatPoint {
     }
 
     public FloatPoint(double X, double Y) {
-        x = (float)X;
-        y = (float)Y;
+        x = (float) X;
+        y = (float) Y;
     }
 
     public FloatPoint(int X, int Y) {

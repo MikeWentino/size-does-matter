@@ -1,4 +1,5 @@
 package theperfectfit.sizedoesmatter;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.graphics.PixelFormat;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -33,15 +35,16 @@ public class CameraFragment extends android.support.v4.app.Fragment {
     private Preview mPreview;
     Camera mCamera;
     ImageButton mButton;
-    View mainview;
+    View mainView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainview = new View(this.getActivity());
+        mainView = new View(this.getActivity());
     }
 
     //creates view and button for takePicture listener on camera
-    //returns bitmap of camptured image to MainActivity
+    //returns bitmap of captured image to MainActivity
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +78,7 @@ public class CameraFragment extends android.support.v4.app.Fragment {
         );
         return endV;
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -103,40 +107,44 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
     List<Size> mSupportedPreviewSizes;
     Camera mCamera;
     boolean mSurfaceCreated = false;
+
     //preview constructors which extablish parameters for layout of camera preview
     public Preview(Context context) {
         super(context);
         mSurfaceView = new SurfaceView(context);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        addViewInLayout(mSurfaceView,0,lp);
+        addViewInLayout(mSurfaceView, 0, lp);
         setCamera(Camera.open(CameraInfo.CAMERA_FACING_BACK));
         mHolder = mSurfaceView.getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
+
     public Preview(Context context, AttributeSet attrs) {
-        super(context,attrs);
+        super(context, attrs);
         mSurfaceView = new SurfaceView(context);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        addViewInLayout(mSurfaceView,0,lp);
+        addViewInLayout(mSurfaceView, 0, lp);
         setCamera(Camera.open(CameraInfo.CAMERA_FACING_BACK));
         mHolder = mSurfaceView.getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
+
     public Preview(Context context, AttributeSet attrs, int defStyle) {
-        super(context,attrs, defStyle);
+        super(context, attrs, defStyle);
         mSurfaceView = new SurfaceView(context);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        addViewInLayout(mSurfaceView,0,lp);
+        addViewInLayout(mSurfaceView, 0, lp);
         setCamera(Camera.open(CameraInfo.CAMERA_FACING_BACK));
         mHolder = mSurfaceView.getHolder();
         mHolder.addCallback(this);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
+
     public void setCamera(Camera camera) {
         mCamera = camera;
         if (mCamera != null) {
@@ -175,6 +183,7 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
                     width, height);
         }
     }
+
     //preforms setup when preview is first created
     public void surfaceCreated(SurfaceHolder holder) {
         try {
@@ -187,12 +196,14 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
         if (mPreviewSize == null) requestLayout();
         mSurfaceCreated = true;
     }
+
     //destroys preview
     public void surfaceDestroyed(SurfaceHolder holder) {
         if (mCamera != null) {
             mCamera.stopPreview();
         }
     }
+
     //gets optimal size for camera preview based on avaliable cameras in current device
     private Size getOptimalPreviewSize(List<Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.1;
@@ -224,16 +235,17 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
         }
         return optimalSize;
     }
+
     //preforms setup for the resolution of the preview and the pictures taken by the camera
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
         Camera.Parameters parameters = mCamera.getParameters();
         List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
         List<Camera.Size> pictureSizes = parameters.getSupportedPictureSizes();
-        if(previewSizes != null) {
-            Camera.Size previewSize = getOptimalPreviewSize(previewSizes, w,h);
+        if (previewSizes != null) {
+            Camera.Size previewSize = getOptimalPreviewSize(previewSizes, w, h);
             Camera.Size pictureSize = getOptimalPreviewSize(pictureSizes, w, h);
             parameters.setPreviewSize(previewSize.width, previewSize.height);
-            parameters.setPictureSize(pictureSize.width,pictureSize.height);
+            parameters.setPictureSize(pictureSize.width, pictureSize.height);
             parameters.set("jpeg-quality", 70);
             parameters.setPictureFormat(PixelFormat.JPEG);
             requestLayout();
@@ -243,10 +255,9 @@ class Preview extends ViewGroup implements SurfaceHolder.Callback {
         }
     }
 
-    public Camera getCamera(){
+    public Camera getCamera() {
         return mCamera;
     }
-
 
 
 }
