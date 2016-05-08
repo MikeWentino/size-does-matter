@@ -2,6 +2,9 @@ package theperfectfit.sizedoesmatter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.support.v7.app.ActionBarActivity;
@@ -97,6 +100,11 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
             case R.id.save:
                 SaveMeasurements.saveTouchImage(mainActivity.getWindow(),mainActivity);
                 Toast.makeText(mainActivity.getApplicationContext(),"Image saved",Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_tutorial:
+
+
+                mainActivity.startActivity(new Intent(mainActivity, TutorialActivity.class));
                 break;
             // size select menu
             case R.id.action_sizes:
