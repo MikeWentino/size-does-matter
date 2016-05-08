@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
+
 import Structs.FloatPoint;
 
 import Singletons.CurrentImage;
@@ -40,7 +41,6 @@ public class MainActivity extends ActionBarActivity {
         mToolbar.setOnMenuItemClickListener(new ToolBarListener(this));
 
 
-
         //builder.show();
     }
 
@@ -51,13 +51,13 @@ public class MainActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void switchSelectionMode(){
+    public void switchSelectionMode() {
         TouchOverlay overlay = (TouchOverlay) findViewById(R.id.TouchOverlay);
         overlay.switchSelection();
     }
 }
 
-class ToolBarListener implements Toolbar.OnMenuItemClickListener{
+class ToolBarListener implements Toolbar.OnMenuItemClickListener {
     MainActivity mainActivity;
 
     public ToolBarListener(MainActivity mainActivity) {
@@ -98,8 +98,8 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
 
             // save button
             case R.id.save:
-                SaveMeasurements.saveTouchImage(mainActivity.getWindow(),mainActivity);
-                Toast.makeText(mainActivity.getApplicationContext(),"Image saved",Toast.LENGTH_SHORT).show();
+                SaveMeasurements.saveTouchImage(mainActivity.getWindow(), mainActivity);
+                Toast.makeText(mainActivity.getApplicationContext(), "Image saved", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_tutorial:
 
@@ -108,7 +108,7 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
                 break;
             // size select menu
             case R.id.action_sizes:
-                CharSequence colors[] = new CharSequence[] {"8.5\"x11\" DEFAULT: piece of paper (portrait)", "2.125\"x3.370\" credit card (portrait)",
+                CharSequence colors[] = new CharSequence[]{"8.5\"x11\" DEFAULT: piece of paper (portrait)", "2.125\"x3.370\" credit card (portrait)",
                         "11\"x8.5\" piece of paper (landscape)", "3.370\"x2.125\" credit card (landscape)"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
@@ -116,29 +116,30 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
                 builder.setItems(colors, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(which==0) {
-                            mainActivity.overlay.ScaleSize = new FloatPoint(11,8.5);
+                        if (which == 0) {
+                            mainActivity.overlay.ScaleSize = new FloatPoint(11, 8.5);
                             System.out.println("PAPER portrait");
-                            Toast.makeText(mainActivity.getApplicationContext(),"Scale changed to paper portrait",Toast.LENGTH_SHORT).show();
-                        } else if(which==1) {
-                            mainActivity.overlay.ScaleSize = new FloatPoint(3.370,2.125);
+                            Toast.makeText(mainActivity.getApplicationContext(), "Scale changed to paper portrait", Toast.LENGTH_SHORT).show();
+                        } else if (which == 1) {
+                            mainActivity.overlay.ScaleSize = new FloatPoint(3.370, 2.125);
                             System.out.println("CREDITCARD portait");
-                            Toast.makeText(mainActivity.getApplicationContext(),"Scale changed to credit card portrait",Toast.LENGTH_SHORT).show();
-                        } else if(which==2) {
-                            mainActivity.overlay.ScaleSize = new FloatPoint(8.5,11);
+                            Toast.makeText(mainActivity.getApplicationContext(), "Scale changed to credit card portrait", Toast.LENGTH_SHORT).show();
+                        } else if (which == 2) {
+                            mainActivity.overlay.ScaleSize = new FloatPoint(8.5, 11);
                             System.out.println("PAPER landscape");
-                            Toast.makeText(mainActivity.getApplicationContext(),"Scale changed to paper landscape",Toast.LENGTH_SHORT).show();
-                        } else if(which==3) {
-                            mainActivity.overlay.ScaleSize = new FloatPoint(2.125,3.370);
+                            Toast.makeText(mainActivity.getApplicationContext(), "Scale changed to paper landscape", Toast.LENGTH_SHORT).show();
+                        } else if (which == 3) {
+                            mainActivity.overlay.ScaleSize = new FloatPoint(2.125, 3.370);
                             System.out.println("CREDITCARD landscape");
-                            Toast.makeText(mainActivity.getApplicationContext(),"Scale changed to credit card landscape",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mainActivity.getApplicationContext(), "Scale changed to credit card landscape", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
                 builder.show();
 
-            // button has not been mapped
-            default : return false;
+                // button has not been mapped
+            default:
+                return false;
         }
 
         return true;
@@ -149,7 +150,7 @@ class ToolBarListener implements Toolbar.OnMenuItemClickListener{
 class BackStackListener implements FragmentManager.OnBackStackChangedListener {
     MainActivity mainActivity;
 
-    public BackStackListener(MainActivity mainActivity){
+    public BackStackListener(MainActivity mainActivity) {
         super();
         this.mainActivity = mainActivity;
     }
@@ -177,7 +178,7 @@ class BackStackListener implements FragmentManager.OnBackStackChangedListener {
             Matrix matrix = new Matrix();
             matrix.postRotate(90);
             Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-            Bitmap finBmap = Bitmap.createScaledBitmap(rotatedBitmap,imgView.getWidth(),imgView.getHeight(),true);
+            Bitmap finBmap = Bitmap.createScaledBitmap(rotatedBitmap, imgView.getWidth(), imgView.getHeight(), true);
             // set imgview to use temp bitmap
             imgView.setImageBitmap(finBmap);
             overlay.setTouchImageView(imgView2, finBmap);
